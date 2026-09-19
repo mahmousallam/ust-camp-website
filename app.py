@@ -445,6 +445,10 @@ def init_db():
     conn.close()
 
 
+if DATABASE_URL:
+    init_db()
+
+
 def student_total_points(conn, student_id):
     row = conn.execute(
         "SELECT COALESCE(SUM(points), 0) AS total FROM points_log WHERE student_id = ?",
