@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}إرسال إيميل جماعي{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>إرسال إيميل لكل المسجلين</h1>
+
+    {% if not smtp_configured %}
+    <div class="flash flash-error" style="margin-bottom:1rem;">
+        إعدادات الإيميل مش متظبطة على السيرفر لسه. اضبط BREVO_API_KEY، أو متغيرات SMTP_HOST وSMTP_USER وSMTP_PASS.
+        الإرسال مش هيشتغل غير بعد ضبط أحد الخيارين.
+    </div>
+    {% endif %}
+
+    <form method="POST" class="camp-form">
+        <label>فلترة حسب المسار (اختياري)</label>
+        <select name="filter_track">
+            <option value="">-- كل المسجلين --</option>
+            {% for t in tracks %}
+            <option value="{{ t }}">{{ t }} فقط</option>
+            {% endfor %}
+        </select>
+
+        <label>موضوع الإيميل *</label>
+        <input type="text" name="subject" required placeholder="مثال: تذكير بموعد السيشن القادمة">
+
+        <label>نص الرسالة *</label>
+        <textarea name="body" rows="8" required placeholder="اكتب رسالتك هنا. تقدر تستخدم {الاسم} وهيتحول تلقائيًا لاسم كل طالب"></textarea>
+        <p style="font-size:0.8rem; color:#888;">استخدم {الاسم} جوه الرسالة عشان يتحول تلقائي لاسم كل طالب وقت الإرسال</p>
+
+        <button type="submit" class="btn-main">إرسال دلوقتي</button>
+    </form>
+
+    {% if result %}
+    <div style="margin-top:1.5rem; background:#fff; padding:1rem; border-radius:10px;">
+        <p>اتبعت: {{ result.sent }}</p>
+        <p>فشل: {{ result.failed }}</p>
+        <p>الإجمالي: {{ result.total }}</p>
+    </div>
+    {% endif %}
+
+    <p style="margin-top:1rem;"><a href="{{ url_for('admin_dashboard') }}">رجوع للوحة الإدارة</a></p>
+</section>
+{% endblock %}

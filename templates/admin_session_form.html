@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block title %}إضافة سيشن{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>إضافة سيشن جديدة</h1>
+    <form method="POST" class="camp-form">
+        <label>المديول *</label>
+        <select name="module_number" required>
+            {% for m in modules %}
+            <option value="{{ m.number }}">{{ m.number }} - {{ m.title }}</option>
+            {% endfor %}
+        </select>
+
+        <label>اسم السيشن *</label>
+        <input type="text" name="title" required placeholder="مثال: CV Writing Workshop">
+
+        <label>اسم المحاضر/المدرب</label>
+        <input type="text" name="instructor" placeholder="مثال: د. أحمد سامي">
+
+        <label>التاريخ</label>
+        <input type="date" name="session_date">
+
+        <label>الوصف</label>
+        <textarea name="description" rows="3"></textarea>
+
+        <label>رابط التسجيل/الفيديو (يوتيوب أو جوجل درايف)</label>
+        <input type="url" name="recording_url" placeholder="https://...">
+
+        <label>رابط المواد/الملزمة (اختياري)</label>
+        <input type="url" name="material_url" placeholder="https://...">
+
+        <label>الـ Assignment المطلوب من الطالب</label>
+        <textarea name="assignment_text" rows="3" placeholder="اكتب المطلوب من الطالب بعد السيشن دي"></textarea>
+
+        <button type="submit" class="btn-main">حفظ السيشن</button>
+    </form>
+</section>
+{% endblock %}

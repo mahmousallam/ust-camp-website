@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}إدارة أعضاء اللجان{% endblock %}
+{% block content %}
+<section class="form-section">
+    <h1>إضافة عضو لجنة</h1>
+    <form method="POST" enctype="multipart/form-data" class="camp-form">
+        <label>الاسم *</label><input type="text" name="name" required>
+        <label>اللجنة *</label>
+        <select name="committee" required>
+            <option value="HR">HR</option><option value="PR">PR</option>
+            <option value="Marketing">Marketing</option><option value="Design">Design</option>
+        </select>
+        <label>صورة</label><input type="file" name="photo">
+        <button type="submit" class="btn-main">إضافة</button>
+    </form>
+</section>
+<section class="admin-section">
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 1rem;">نجم الأسبوع الحالي</h2>
+    {% if current_spotlight %}<p>{{ current_spotlight.name }} ({{ current_spotlight.committee }})</p>
+    {% else %}<p style="color:#888;">مفيش نجم متعيّن حاليًا</p>{% endif %}
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 1rem;">كل الأعضاء</h2>
+    <table class="students-table">
+        <thead><tr><th>الاسم</th><th>اللجنة</th><th></th></tr></thead>
+        <tbody>
+            {% for m in members %}
+            <tr><td>{{ m.name }}</td><td>{{ m.committee }}</td>
+                <td><a href="{{ url_for('admin_committee_spotlight', member_id=m.id) }}" class="btn-small">اجعله نجم الأسبوع</a></td></tr>
+            {% else %}<tr><td colspan="3">لسه مفيش أعضاء</td></tr>{% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

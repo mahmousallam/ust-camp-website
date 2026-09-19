@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block title %}التسجيل - الكامب الطلابي{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>استمارة التسجيل</h1>
+    <form method="POST" class="camp-form">
+        <label>الاسم بالكامل *</label>
+        <input type="text" name="full_name" required>
+
+        <label>الكلية *</label>
+        <input type="text" name="college" required>
+
+        <label>التخصص *</label>
+        <input type="text" name="specialization" placeholder="مثال: بيوتكنولوجي، حاسبات، تجارة..." required>
+
+        <label>الفرقة</label>
+        <select name="level">
+            <option value="الأولى">الأولى</option>
+            <option value="الثانية">الثانية</option>
+            <option value="الثالثة">الثالثة</option>
+            <option value="الرابعة">الرابعة</option>
+        </select>
+
+        <label>المسار في المديول الرابع (Practical Skills)</label>
+        <select name="track">
+            <option value="">-- اختار مسار --</option>
+            {% for t in tracks %}
+            <option value="{{ t }}" {% if track_availability[t].full %}disabled{% endif %}>
+                {{ t }}
+                {% if track_availability[t].full %} - المقاعد اكتملت{% elif track_availability[t].limit %} ({{ track_availability[t].taken }}/{{ track_availability[t].limit }}){% endif %}
+            </option>
+            {% endfor %}
+        </select>
+
+        <label>رقم التليفون *</label>
+        <input type="tel" name="phone" required>
+
+        <label>رقم الواتساب</label>
+        <input type="tel" name="whatsapp" placeholder="لو مختلف عن رقم التليفون">
+
+        <label>الإيميل *</label>
+        <input type="email" name="email" required>
+
+        <label>ملاحظات (اختياري)</label>
+        <textarea name="notes" rows="3"></textarea>
+
+        <button type="submit" class="btn-main">تسجيل</button>
+    </form>
+</section>
+{% endblock %}

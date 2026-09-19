@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}دخول الإدارة{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>دخول لوحة الإدارة</h1>
+    <form method="POST" class="camp-form">
+        <label>كلمة السر</label>
+        <input type="password" name="password" required autofocus>
+        <button type="submit" class="btn-main">دخول</button>
+    </form>
+</section>
+{% endblock %}

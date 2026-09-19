@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}شارك لحظة{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>شارك لحظة من البرنامج</h1>
+    <p style="color:#666; margin-bottom:1rem;">ارفع صورة أو فيديو من ورشة، زيارة، أو أي إنجاز — هتظهر في المعرض العام بعد موافقة الأدمن.</p>
+
+    <form method="POST" class="camp-form" enctype="multipart/form-data">
+        <label>الصورة أو الفيديو *</label>
+        <input type="file" name="file" required accept="image/*,video/mp4,video/quicktime" capture="environment">
+        <p style="font-size:0.8rem; color:#888;">على الموبايل هتفتحلك الكاميرا مباشرة، وتقدر برضو تختار من المعرض</p>
+
+        <label>تعليق قصير (اختياري)</label>
+        <textarea name="caption" rows="2" placeholder="مثال: لحظة من زيارة شركة الأغذية"></textarea>
+
+        <button type="submit" class="btn-main">رفع اللحظة</button>
+    </form>
+
+    <p style="margin-top:1rem;"><a href="{{ url_for('student_dashboard') }}">رجوع لأكونتي</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}الرئيسية - الكامب الطلابي{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h1>الكامب الطلابي</h1>
+    <p class="subtitle">برنامج تدريبي لمدة 3 شهور لكل طلاب الجامعة</p>
+    {% if registration_open %}
+    <a href="{{ url_for('register') }}" class="btn-main">سجّل دلوقتي</a>
+    <p style="font-size:0.85rem; color:#888; margin-top:0.8rem;">التسجيل متاح لغاية {{ deadline.strftime('%Y-%m-%d') }}</p>
+    {% else %}
+    <p style="color:#c0392b; font-weight:bold;">التسجيل مقفول حاليًا</p>
+    {% endif %}
+</section>
+
+<section class="about">
+    <h2>عن الكامب</h2>
+    <p>
+        الكامب برنامج تدريبي شامل يستمر 3 شهور، يضم 6 مديولات. أول 4 مديولات
+        كورسات وتدريبات عامة لكل الطلاب أيًا كان تخصصهم، ومن المديول الخامس
+        هيتم توزيع الطلاب حسب تخصص كل واحد.
+    </p>
+</section>
+
+<section class="modules">
+    <h2>المديولات</h2>
+    <div class="modules-grid">
+        {% for m in modules %}
+        <div class="module-card">
+            <span class="module-number">{{ m.number }}</span>
+            <h3>{{ m.title }}</h3>
+            <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">{{ m.desc }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</section>
+
+<section class="about">
+    <h2>نظام النقاط</h2>
+    <p>كل طالب بيجمع نقاط طول البرنامج: حضور ورشة (10)، مشاركة في نقاش (5)، حضور زيارة (15)، تنظيم فعالية (20)، مشروع صغير (30)، الفوز في مسابقة (50). تابع نقاطك من صفحة "دخول الطالب"، وشوف ترتيبك في "لوحة الصدارة".</p>
+</section>
+
+<section class="about">
+    <h2>المشروع الختامي والشهادات</h2>
+    <p>
+        في نهاية البرنامج، كل فريق بيقدم مشروع ختامي (Capstone) في Demo Day.
+        الشهادات بتتقسم لمستويات: Participation، Completion، Outstanding Participant، وBest Team Award.
+    </p>
+</section>
+
+{% if registration_open %}
+<section class="cta">
+    <h2>مستني إيه؟</h2>
+    <a href="{{ url_for('register') }}" class="btn-main">انضم للكامب</a>
+</section>
+{% endif %}
+{% endblock %}

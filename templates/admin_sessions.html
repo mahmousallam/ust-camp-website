@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}إدارة السيشنز{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>السيشنز</h1>
+        <div>
+            <a href="{{ url_for('admin_session_new') }}" class="btn-small">+ سيشن جديدة</a>
+            <a href="{{ url_for('admin_dashboard') }}" class="btn-small">رجوع للوحة الإدارة</a>
+        </div>
+    </div>
+
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>المديول</th>
+                <th>اسم السيشن</th>
+                <th>المحاضر</th>
+                <th>التاريخ</th>
+                <th>رابط التسجيل</th>
+                <th>Assignment</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions_list %}
+            <tr>
+                <td>{{ s.module_number }}</td>
+                <td>{{ s.title }}</td>
+                <td>{{ s.instructor or '-' }}</td>
+                <td>{{ s.session_date or '-' }}</td>
+                <td>{% if s.recording_url %}<a href="{{ s.recording_url }}" target="_blank">رابط</a>{% else %}-{% endif %}</td>
+                <td>{{ 'نعم' if s.assignment_text else 'لا' }}</td>
+                <td><a href="{{ url_for('admin_session_delete', session_id=s.id) }}" class="link-danger" onclick="return confirm('متأكد؟')">حذف</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">لسه مفيش سيشنز مضافة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

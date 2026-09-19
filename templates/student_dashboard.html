@@ -1,0 +1,151 @@
+{% extends "base.html" %}
+{% block title %}أكونتي{% endblock %}
+
+{% block content %}
+{% include "_stories_bar.html" %}
+
+{% if my_active_moments %}
+<div style="background:#fff; padding:1rem; border-radius:6px; margin-bottom:1.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+    <strong style="color:#2d6a4f;">استوريهاتك النشطة:</strong>
+    {% for m in my_active_moments %}
+    <a href="{{ url_for('student_moment_viewers', moment_id=m.id) }}" style="margin-right:0.8rem; font-size:0.9rem;">
+        {{ m.caption or 'لحظة' }} - مين شافها
+    </a>
+    {% endfor %}
+</div>
+{% endif %}
+
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>أهلاً، {{ student.full_name }}</h1>
+        <div>
+            <a href="{{ url_for('student_upload') }}" class="btn-small">وثّق نشاط جديد</a>
+            <a href="{{ url_for('student_moment_new') }}" class="btn-small">شارك لحظة</a>
+            {% if student.track %}<a href="{{ url_for('student_track_chat') }}" class="btn-small">جروب {{ student.track }}</a>{% endif %}
+            <a href="{{ url_for('leaderboard') }}" class="btn-small">لوحة الصدارة</a>
+            <a href="{{ url_for('student_logout') }}" class="btn-small btn-danger">خروج</a>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <span class="stat-number">{{ total_points }}</span>
+            <span class="stat-label">إجمالي نقاطك</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ level }}</span>
+            <span class="stat-label">مستواك الحالي</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ streak }}</span>
+            <span class="stat-label">سيشنز متتالية بتسليم</span>
+        </div>
+        <div class="stat-card">
+            <span class="stat-number">{{ team.name if team else '-' }}</span>
+            <span class="stat-label">فريقك</span>
+        </div>
+    </div>
+
+    <h3 style="color:#2d6a4f; margin:1rem 0 0.5rem;">تقدمك في البرنامج</h3>
+    <div class="progress-outer">
+        <div class="progress-inner" style="width:{{ progress_pct }}%;">{{ progress_pct }}%</div>
+    </div>
+    <p style="font-size:0.85rem; color:#666; margin-bottom:1rem;">
+        سلّمت {{ completed }} من {{ total_required }} Assignments مطلوبة
+        {% if certificate_eligible %}
+        — <a href="{{ url_for('student_certificate') }}" class="btn-small">حمّل شهادتك دلوقتي</a>
+        {% else %}
+        — لازم توصل لـ75% عشان تقدر تحمّل الشهادة
+        {% endif %}
+    </p>
+
+    {% if my_badges %}
+    <h3 style="color:#2d6a4f; margin:1rem 0 0.5rem;">بادجاتك</h3>
+    <div style="display:flex; gap:0.5rem; flex-wrap:wrap; margin-bottom:1rem;">
+        {% for b in my_badges %}
+        <span class="badge-pill">{{ b.badge_name }}</span>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <h3 style="color:#2d6a4f; margin:1rem 0 0.5rem;">إعدادات لوحة الصدارة</h3>
+    <form method="POST" action="{{ url_for('student_settings') }}" style="margin-bottom:1.5rem;">
+        <label style="display:flex; align-items:center; gap:0.5rem; font-weight:normal;">
+            <input type="checkbox" name="show_on_leaderboard" {% if student.show_on_leaderboard %}checked{% endif %} onchange="this.form.submit()">
+            إظهار اسمي في لوحة الصدارة العامة
+        </label>
+    </form>
+
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 0.8rem;">السيشنز</h2>
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>المديول</th>
+                <th>السيشن</th>
+                <th>التاريخ</th>
+                <th>حالة الـ Assignment</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in sessions_list %}
+            <tr>
+                <td>{{ s.module_number }}</td>
+                <td>{{ s.title }}</td>
+                <td>{{ s.session_date or '-' }}</td>
+                <td>
+                    {% if s.id in submitted_session_ids %}
+                        <span style="color:#1e824c;">تم التسليم ✓</span>
+                    {% elif s.assignment_text %}
+                        <span style="color:#c0392b;">لسه متسلمش</span>
+                    {% else %}
+                        <span style="color:#888;">مفيش Assignment</span>
+                    {% endif %}
+                </td>
+                <td><a href="{{ url_for('student_session_detail', session_id=s.id) }}" class="btn-small">فتح</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="5">لسه مفيش سيشنز متاحة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 0.8rem;">تسليماتي وتوثيقاتي</h2>
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>العنوان</th>
+                <th>النوع</th>
+                <th>النقاط</th>
+                <th>التاريخ</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sub in my_submissions %}
+            <tr>
+                <td>{{ sub.title }}</td>
+                <td>{{ sub.sub_type }}</td>
+                <td>{{ sub.points_awarded }}</td>
+                <td>{{ sub.submitted_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">لسه معملتش أي تسليم</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 0.8rem;">سجل النقاط</h2>
+    <table class="students-table">
+        <thead>
+            <tr><th>النشاط</th><th>النقاط</th><th>التاريخ</th></tr>
+        </thead>
+        <tbody>
+            {% for p in points_history %}
+            <tr><td>{{ p.activity }}</td><td>{{ p.points }}</td><td>{{ p.created_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="3">لسه مفيش نقاط مسجلة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ s.title }}{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>{{ s.title }}</h1>
+    <p style="color:#666; margin-bottom:1rem;">
+        المديول {{ s.module_number }}
+        {% if s.instructor %} - المحاضر: {{ s.instructor }}{% endif %}
+        {% if s.session_date %} - {{ s.session_date }}{% endif %}
+    </p>
+
+    {% if s.description %}
+    <p style="margin-bottom:1rem;">{{ s.description }}</p>
+    {% endif %}
+
+    {% if s.recording_url %}
+    <p><a href="{{ s.recording_url }}" target="_blank" class="btn-small">مشاهدة التسجيل</a></p>
+    {% endif %}
+
+    {% if s.material_url %}
+    <p><a href="{{ s.material_url }}" target="_blank" class="btn-small">تحميل المواد</a></p>
+    {% endif %}
+
+    {% if s.assignment_text %}
+    <div style="background:#fff; padding:1.5rem; border-radius:10px; margin-top:1.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <h3 style="color:#2d6a4f; margin-bottom:0.8rem;">الـ Assignment المطلوب</h3>
+        <p style="margin-bottom:1rem;">{{ s.assignment_text }}</p>
+
+        <form method="POST" class="camp-form" enctype="multipart/form-data">
+            <input type="hidden" name="form_type" value="assignment">
+            <label>إجابتك (نص)</label>
+            <textarea name="content_text" rows="4"></textarea>
+
+            <label>أو ارفع ملف</label>
+            <input type="file" name="file">
+
+            <button type="submit" class="btn-main">تسليم</button>
+        </form>
+    </div>
+    {% endif %}
+
+    <div style="background:#fff; padding:1.5rem; border-radius:10px; margin-top:1.5rem; box-shadow:0 2px 6px rgba(0,0,0,0.08);">
+        <h3 style="color:#2d6a4f; margin-bottom:0.8rem;">نقاش وأسئلة عن السيشن</h3>
+
+        {% for c in comments %}
+        <div style="padding:0.6rem 0; border-bottom:1px solid #eee;">
+            <strong>{{ c.full_name }}</strong>
+            <span style="font-size:0.8rem; color:#888;"> - {{ c.created_at }}</span>
+            <p>{{ c.comment_text }}</p>
+        </div>
+        {% else %}
+        <p style="color:#888;">لسه مفيش تعليقات، كن أول واحد يسأل</p>
+        {% endfor %}
+
+        <form method="POST" style="margin-top:1rem;">
+            <input type="hidden" name="form_type" value="comment">
+            <textarea name="comment_text" rows="2" placeholder="اكتب سؤالك أو تعليقك هنا" style="width:100%; padding:0.6rem; border:1px solid #ccc; border-radius:6px;"></textarea>
+            <button type="submit" class="btn-small" style="margin-top:0.5rem;">إرسال</button>
+        </form>
+    </div>
+
+    <p style="margin-top:1rem;"><a href="{{ url_for('student_dashboard') }}">رجوع لأكونتي</a></p>
+</section>
+{% endblock %}

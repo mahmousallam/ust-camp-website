@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}مين شاف اللحظة{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>مين شاف اللحظة دي</h1>
+    <p style="color:#666; margin-bottom:1rem;">{{ moment.caption or 'بدون تعليق' }}</p>
+
+    <table class="students-table">
+        <thead><tr><th>الاسم</th><th>وقت المشاهدة</th></tr></thead>
+        <tbody>
+            {% for v in viewers %}
+            <tr><td>{{ v.full_name }}</td><td>{{ v.viewed_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="2">لسه محدش شافها</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <p style="margin-top:1rem;"><a href="{{ url_for('student_dashboard') }}">رجوع لأكونتي</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+{% block title %}تسجيل النقاط{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>تسجيل نقاط لطالب</h1>
+    <form method="POST" class="camp-form">
+        <input type="hidden" name="form_type" value="points">
+        <label>الطالب *</label>
+        <select name="student_id" required>
+            <option value="">-- اختار طالب --</option>
+            {% for s in students %}
+            <option value="{{ s.id }}">{{ s.full_name }} ({{ s.email }})</option>
+            {% endfor %}
+        </select>
+
+        <label>النشاط</label>
+        <select name="activity">
+            <option value="">-- اختار نشاط جاهز --</option>
+            {% for name, pts in activities.items() %}
+            <option value="{{ name }}">{{ name }} ({{ pts }} نقطة)</option>
+            {% endfor %}
+        </select>
+
+        <label>أو نقاط مخصصة (لو النشاط مش في القائمة)</label>
+        <input type="number" name="custom_points" placeholder="مثال: 25">
+
+        <button type="submit" class="btn-main">تسجيل النقاط</button>
+    </form>
+</section>
+
+<section class="form-section" style="margin-top:2rem;">
+    <h1>منح بادج يدوي</h1>
+    <form method="POST" class="camp-form">
+        <input type="hidden" name="form_type" value="badge">
+        <label>الطالب *</label>
+        <select name="student_id" required>
+            <option value="">-- اختار طالب --</option>
+            {% for s in students %}
+            <option value="{{ s.id }}">{{ s.full_name }} ({{ s.email }})</option>
+            {% endfor %}
+        </select>
+        <label>اسم البادج *</label>
+        <input type="text" name="badge_name" required placeholder="مثال: بادج المنتور، بادج التميز في المديول 4">
+        <button type="submit" class="btn-main">منح البادج</button>
+    </form>
+</section>
+
+<section class="admin-section">
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 0.8rem;">آخر النقاط المسجلة</h2>
+    <table class="students-table">
+        <thead>
+            <tr><th>الطالب</th><th>النشاط</th><th>النقاط</th><th>التاريخ</th></tr>
+        </thead>
+        <tbody>
+            {% for log in recent_log %}
+            <tr><td>{{ log.full_name }}</td><td>{{ log.activity }}</td><td>{{ log.points }}</td><td>{{ log.created_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="4">لسه مفيش نقاط مسجلة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 style="color:#2d6a4f; margin:1.5rem 0 0.8rem;">آخر البادجات الممنوحة</h2>
+    <table class="students-table">
+        <thead>
+            <tr><th>الطالب</th><th>البادج</th><th>التاريخ</th></tr>
+        </thead>
+        <tbody>
+            {% for b in recent_badges %}
+            <tr><td>{{ b.full_name }}</td><td>{{ b.badge_name }}</td><td>{{ b.awarded_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="3">لسه مفيش بادجات ممنوحة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

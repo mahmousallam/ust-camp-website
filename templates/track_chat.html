@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% block title %}جروب {{ track }}{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>جروب مسار {{ track }}</h1>
+    <div class="about" style="margin-bottom:1rem;">
+        {% for message in messages %}
+        <p><strong>{{ message.full_name }}</strong> <span style="color:#888;">{{ message.created_at }}</span></p>
+        <p style="margin-bottom:1rem;">{{ message.message_text }}</p>
+        {% else %}
+        <p style="color:#888;">لسه مفيش رسائل في الجروب.</p>
+        {% endfor %}
+    </div>
+    <form method="POST" action="{{ url_for('student_track_chat_send') }}" class="camp-form">
+        <label>اكتب رسالة</label>
+        <textarea name="message_text" rows="3" required maxlength="1000"></textarea>
+        <button type="submit" class="btn-main">إرسال</button>
+    </form>
+    <p style="margin-top:1rem;"><a href="{{ url_for('student_dashboard') }}">رجوع لأكونتي</a></p>
+</section>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}مراجعة التسليمات{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>مراجعة التسليمات والتوثيقات</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-small">رجوع للوحة الإدارة</a>
+    </div>
+
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>الطالب</th>
+                <th>النوع</th>
+                <th>العنوان</th>
+                <th>المحتوى/الملف</th>
+                <th>النقاط الحالية</th>
+                <th>تسجيل نقاط</th>
+                <th>تاريخ التسليم</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sub in submissions %}
+            <tr>
+                <td>{{ sub.full_name }}<br><span style="font-size:0.8rem;color:#888;">{{ sub.email }}</span></td>
+                <td>{{ sub.sub_type }}</td>
+                <td>{{ sub.title }}</td>
+                <td>
+                    {% if sub.content_text %}<p style="max-width:250px;">{{ sub.content_text }}</p>{% endif %}
+                    {% if sub.file_path %}<a href="{{ sub.file_path }}" target="_blank">فتح الملف</a>{% endif %}
+                </td>
+                <td>{{ sub.points_awarded }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('admin_submission_grade', submission_id=sub.id) }}" style="display:flex; gap:0.3rem;">
+                        <input type="number" name="points" placeholder="نقاط" style="width:70px; padding:0.3rem;">
+                        <button type="submit" class="btn-small" style="margin:0;">حفظ</button>
+                    </form>
+                </td>
+                <td>{{ sub.submitted_at }}</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="7">لسه مفيش تسليمات</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

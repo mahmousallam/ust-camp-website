@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}التسجيل مقفول{% endblock %}
+
+{% block content %}
+<section class="thank-you">
+    <h1>⏰ التسجيل اتقفل</h1>
+    <p>ميعاد التسجيل كان لغاية {{ deadline.strftime('%Y-%m-%d') }}. تابعونا على السوشيال ميديا عشان تعرفوا معاد الترم الجاي.</p>
+    <a href="{{ url_for('home') }}" class="btn-main">العودة للرئيسية</a>
+</section>
+{% endblock %}

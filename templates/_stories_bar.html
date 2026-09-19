@@ -1,0 +1,103 @@
+{% if stories %}
+<div class="stories-bar">
+    {% for s in stories %}
+    <div class="story-circle {% if not s.has_unseen %}story-seen{% endif %}" onclick="openStory({{ loop.index0 }})">
+        <div class="story-ring">
+            <div class="story-avatar">{{ s.student_name[0] }}</div>
+            {% if s.is_mine %}<span class="story-views-badge">{{ s.views_count }}</span>{% endif %}
+        </div>
+        <span class="story-name">{{ s.student_name.split(' ')[0] }}</span>
+    </div>
+    {% endfor %}
+</div>
+
+<div id="story-viewer" class="story-viewer">
+    <div class="story-viewer-top"><div id="story-progress" class="story-progress"></div></div>
+    <button class="story-close" onclick="closeStory()">×</button>
+    <div id="story-author" class="story-author"></div>
+    <div id="story-media-container" class="story-media-container">
+        <div class="story-nav-zone story-nav-prev" onclick="prevSlide()"></div>
+        <div class="story-nav-zone story-nav-next" onclick="nextSlide()"></div>
+        <img id="story-img" style="display:none;">
+        <video id="story-video" style="display:none;" playsinline></video>
+    </div>
+    <div class="story-bottom-bar">
+        <div id="story-caption" class="story-caption"></div>
+        <div id="story-views-line" class="story-views-line" style="display:none;">👁 شافها <span id="story-views-num">0</span></div>
+        <div class="story-actions">
+            <button id="story-like-btn" class="story-like-btn" onclick="toggleLike()">🤍 <span id="story-likes-count">0</span></button>
+            <button id="story-delete-btn" class="story-delete-btn" onclick="deleteCurrentMoment()" style="display:none;">🗑️ حذف</button>
+        </div>
+    </div>
+</div>
+
+<script>
+const storiesData = {{ stories | tojson }};
+const isLoggedIn = {{ 'true' if is_logged_in else 'false' }};
+let currentStoryIdx = 0, currentSlideIdx = 0, slideTimer = null;
+
+function openStory(idx) { currentStoryIdx = idx; currentSlideIdx = 0; document.getElementById('story-viewer').style.display = 'flex'; showSlide(); }
+function closeStory() { document.getElementById('story-viewer').style.display = 'none'; clearTimeout(slideTimer); document.getElementById('story-video').pause(); }
+
+function buildProgressBar() {
+    const story = storiesData[currentStoryIdx];
+    const bar = document.getElementById('story-progress');
+    bar.innerHTML = '';
+    story.moments.forEach((m, i) => {
+        const seg = document.createElement('div'); seg.className = 'story-progress-seg';
+        const fill = document.createElement('div'); fill.className = 'story-progress-fill'; fill.id = 'seg-fill-' + i;
+        if (i < currentSlideIdx) fill.style.width = '100%';
+        seg.appendChild(fill); bar.appendChild(seg);
+    });
+}
+function updateLikeButton(m) {
+    document.getElementById('story-like-btn').innerHTML = (m.liked ? '💚' : '🤍') + ' <span id="story-likes-count">' + m.likes_count + '</span>';
+}
+function showSlide() {
+    clearTimeout(slideTimer);
+    const story = storiesData[currentStoryIdx];
+    if (!story || currentSlideIdx >= story.moments.length) { closeStory(); return; }
+    const moment = story.moments[currentSlideIdx];
+    document.getElementById('story-author').textContent = story.student_name;
+    document.getElementById('story-caption').textContent = moment.caption || '';
+    buildProgressBar(); updateLikeButton(moment);
+    document.getElementById('story-delete-btn').style.display = story.is_mine ? 'inline-block' : 'none';
+    const viewsLine = document.getElementById('story-views-line');
+    if (story.is_mine) { viewsLine.style.display = 'block'; document.getElementById('story-views-num').textContent = story.views_count || 0; }
+    else { viewsLine.style.display = 'none'; }
+    const img = document.getElementById('story-img'), video = document.getElementById('story-video');
+    const isVideo = moment.file_path.endsWith('.mp4') || moment.file_path.endsWith('.mov');
+    if (isVideo) { img.style.display = 'none'; video.style.display = 'block'; video.src = moment.file_path; video.currentTime = 0; video.play(); video.onended = nextSlide; }
+    else { video.style.display = 'none'; video.pause(); img.style.display = 'block'; img.src = moment.file_path; slideTimer = setTimeout(nextSlide, 4000); }
+    const fill = document.getElementById('seg-fill-' + currentSlideIdx);
+    if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; setTimeout(() => { fill.style.transition = isVideo ? 'none' : 'width 4s linear'; fill.style.width = '100%'; }, 50); }
+    if (isLoggedIn) fetch('/student/moment/view/' + moment.id, {method: 'POST'});
+}
+function toggleLike() {
+    if (!isLoggedIn) { alert('سجّل دخول كطالب الأول'); return; }
+    const story = storiesData[currentStoryIdx], moment = story.moments[currentSlideIdx];
+    clearTimeout(slideTimer);
+    fetch('/student/moment/' + moment.id + '/like', {method: 'POST'}).then(r => r.json()).then(data => {
+        moment.liked = data.liked; moment.likes_count = data.likes_count; updateLikeButton(moment);
+        const isVideo = moment.file_path.endsWith('.mp4') || moment.file_path.endsWith('.mov');
+        if (!isVideo) slideTimer = setTimeout(nextSlide, 4000);
+    });
+}
+function deleteCurrentMoment() {
+    if (!confirm('متأكد؟')) return;
+    const story = storiesData[currentStoryIdx], moment = story.moments[currentSlideIdx];
+    fetch('/student/moment/' + moment.id + '/delete', {method: 'POST'}).then(r => r.json()).then(data => { if (data.ok) location.reload(); });
+}
+function nextSlide() {
+    const story = storiesData[currentStoryIdx];
+    currentSlideIdx++;
+    if (currentSlideIdx >= story.moments.length) {
+        if (currentStoryIdx < storiesData.length - 1) { currentStoryIdx++; currentSlideIdx = 0; showSlide(); } else closeStory();
+    } else showSlide();
+}
+function prevSlide() {
+    if (currentSlideIdx > 0) { currentSlideIdx--; showSlide(); }
+    else if (currentStoryIdx > 0) { currentStoryIdx--; currentSlideIdx = 0; showSlide(); }
+}
+</script>
+{% endif %}

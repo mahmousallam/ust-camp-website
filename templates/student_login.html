@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block title %}دخول الطالب{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>دخول الطالب</h1>
+    <form method="POST" class="camp-form">
+        <label>الإيميل اللي سجّلت بيه</label>
+        <input type="email" name="email" required>
+
+        <label>الكود اللي اخدته وقت التسجيل</label>
+        <input type="text" name="access_code" required placeholder="مثال: AB12CD34">
+
+        <button type="submit" class="btn-main">دخول</button>
+    </form>
+    <p style="text-align:center; margin-top:1rem; font-size:0.9rem; color:#666;">
+        لسه معملتش تسجيل؟ <a href="{{ url_for('register') }}">سجّل من هنا</a>
+    </p>
+</section>
+{% endblock %}

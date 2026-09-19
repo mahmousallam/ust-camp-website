@@ -1,0 +1,80 @@
+{% extends "base.html" %}
+{% block title %}لوحة الإدارة{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>لوحة الإدارة</h1>
+        <div>
+            <a href="{{ url_for('admin_sessions') }}" class="btn-small">السيشنز</a>
+            <a href="{{ url_for('admin_points') }}" class="btn-small">النقاط والبادجات</a>
+            <a href="{{ url_for('admin_teams') }}" class="btn-small">الفرق</a>
+            <a href="{{ url_for('admin_submissions') }}" class="btn-small">مراجعة التسليمات</a>
+            <a href="{{ url_for('admin_analytics') }}" class="btn-small">متابعة الانقطاع</a>
+            <a href="{{ url_for('admin_moments') }}" class="btn-small">لحظات البرنامج</a>
+            <a href="{{ url_for('admin_committee') }}" class="btn-small">أعضاء اللجان</a>
+            <a href="{{ url_for('admin_bulk_email') }}" class="btn-small">إيميل جماعي</a>
+            <a href="{{ url_for('admin_export') }}" class="btn-small">تصدير Excel</a>
+            <a href="{{ url_for('admin_logout') }}" class="btn-small btn-danger">خروج</a>
+        </div>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <span class="stat-number">{{ total }}</span>
+            <span class="stat-label">إجمالي المسجلين</span>
+        </div>
+        {% for spec, count in specialization_counts.items() %}
+        <div class="stat-card">
+            <span class="stat-number">{{ count }}</span>
+            <span class="stat-label">{{ spec }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <h2 style="color:#2d6a4f; margin-bottom:0.8rem;">توزيع مسارات المديول الرابع</h2>
+    <div class="stats">
+        {% for track, count in track_counts.items() %}
+        <div class="stat-card">
+            <span class="stat-number">{{ count }}</span>
+            <span class="stat-label">{{ track }}</span>
+        </div>
+        {% endfor %}
+    </div>
+
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الكلية</th>
+                <th>التخصص</th>
+                <th>الفرقة</th>
+                <th>المسار</th>
+                <th>التليفون</th>
+                <th>الواتساب</th>
+                <th>الإيميل</th>
+                <th>تاريخ التسجيل</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for s in students %}
+            <tr>
+                <td>{{ s.full_name }}</td>
+                <td>{{ s.college }}</td>
+                <td>{{ s.specialization }}</td>
+                <td>{{ s.level }}</td>
+                <td>{{ s.track or '-' }}</td>
+                <td>{{ s.phone }}</td>
+                <td>{{ s.whatsapp or '-' }}</td>
+                <td>{{ s.email }}</td>
+                <td>{{ s.created_at }}</td>
+                <td><a href="{{ url_for('admin_delete', student_id=s.id) }}" class="link-danger" onclick="return confirm('متأكد إنك عايز تمسح ده؟')">حذف</a></td>
+            </tr>
+            {% else %}
+            <tr><td colspan="10">لسه مفيش تسجيلات</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

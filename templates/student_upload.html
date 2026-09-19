@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block title %}توثيق نشاط{% endblock %}
+
+{% block content %}
+<section class="form-section">
+    <h1>وثّق نشاط جديد</h1>
+    <p style="color:#666; margin-bottom:1rem;">استخدم الصفحة دي عشان توثق زيارة حضرتها، ورقة بحثية عملتها، أو أي نشاط تاني.</p>
+
+    <form method="POST" class="camp-form" enctype="multipart/form-data">
+        <label>عنوان النشاط *</label>
+        <input type="text" name="title" required placeholder="مثال: زيارة شركة X للأغذية">
+
+        <label>نوع التوثيق</label>
+        <select name="sub_type">
+            <option value="زيارة">زيارة</option>
+            <option value="ورقة بحثية">ورقة بحثية</option>
+            <option value="مشروع">مشروع</option>
+            <option value="آخر">آخر</option>
+        </select>
+
+        <label>وصف قصير</label>
+        <textarea name="content_text" rows="4" placeholder="اكتب تفاصيل بسيطة عن النشاط"></textarea>
+
+        <label>ارفع ملف (صورة، PDF، تقرير...)</label>
+        <input type="file" name="file">
+
+        <button type="submit" class="btn-main">رفع التوثيق</button>
+    </form>
+
+    <p style="margin-top:1rem;"><a href="{{ url_for('student_dashboard') }}">رجوع لأكونتي</a></p>
+</section>
+{% endblock %}

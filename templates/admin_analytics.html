@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}تحليلات المتابعة{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>الطلاب في خطر الانقطاع</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-small">رجوع للوحة الإدارة</a>
+    </div>
+    <p style="color:#666; margin-bottom:1rem;">
+        من إجمالي {{ total_students }} طالب — دول اللي مفيهوش أي نشاط (تسليم/توثيق) من 14 يوم أو أكتر.
+    </p>
+
+    <table class="students-table">
+        <thead>
+            <tr>
+                <th>الاسم</th>
+                <th>الإيميل</th>
+                <th>عدد الأيام من غير نشاط</th>
+                <th>نسبة الإكمال</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for a in at_risk %}
+            <tr>
+                <td>{{ a.name }}</td>
+                <td>{{ a.email }}</td>
+                <td style="color:#c0392b; font-weight:bold;">{{ a.days_inactive }} يوم</td>
+                <td>{{ a.progress_pct }}%</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="4">مفيش حد في خطر انقطاع حاليًا 🎉</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</section>
+{% endblock %}

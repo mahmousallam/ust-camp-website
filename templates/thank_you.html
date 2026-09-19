@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}تم التسجيل{% endblock %}
+
+{% block content %}
+<section class="thank-you">
+    <h1>تم التسجيل بنجاح</h1>
+    <p>احتفظ بالكود ده كويس، هتحتاجه تدخل بيه أكونتك على المنصة:</p>
+    <div class="access-code-box">{{ access_code }}</div>
+    {% if email_sent %}
+    <p style="color:#1e824c; font-size:0.9rem;">✓ اتبعتلك كمان نسخة على إيميلك</p>
+    {% else %}
+    <p style="font-size:0.9rem; color:#666;">هتدخل بالإيميل ({{ email }}) + الكود ده من صفحة "دخول الطالب"</p>
+    {% endif %}
+    <div style="margin-top:1.5rem;">
+        <a href="{{ url_for('student_login') }}" class="btn-main">دخول كطالب دلوقتي</a>
+    </div>
+    <div style="margin-top:1rem;">
+        <a href="{{ url_for('home') }}">العودة للرئيسية</a>
+    </div>
+</section>
+{% endblock %}

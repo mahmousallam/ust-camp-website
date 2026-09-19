@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+{% block title %}إدارة اللحظات{% endblock %}
+
+{% block content %}
+<section class="admin-section">
+    <div class="admin-header">
+        <h1>لحظات محتاجة موافقة ({{ pending|length }})</h1>
+        <a href="{{ url_for('admin_dashboard') }}" class="btn-small">رجوع للوحة الإدارة</a>
+    </div>
+
+    <div class="moments-grid">
+        {% for m in pending %}
+        <div class="moment-card">
+            {% if m.file_path.endswith('.mp4') or m.file_path.endswith('.mov') %}
+            <video controls src="{{ m.file_path }}"></video>
+            {% else %}
+            <img src="{{ m.file_path }}" alt="{{ m.caption }}">
+            {% endif %}
+            <div class="moment-info">
+                {% if m.caption %}<p>{{ m.caption }}</p>{% endif %}
+                <span class="moment-author">{{ m.full_name }}</span>
+                <div style="margin-top:0.5rem; display:flex; gap:0.5rem;">
+                    <a href="{{ url_for('admin_moment_approve', moment_id=m.id) }}" class="btn-small">موافقة</a>
+                    <a href="{{ url_for('admin_moment_download', moment_id=m.id) }}" class="btn-small">تحميل</a>
+                <a href="{{ url_for('admin_moment_delete', moment_id=m.id) }}" class="btn-small btn-danger" onclick="return confirm('متأكد؟')">حذف</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p style="color:#888;">مفيش حاجة محتاجة موافقة دلوقتي</p>
+        {% endfor %}
+    </div>
+
+    <h2 style="color:#2d6a4f; margin:2rem 0 1rem;">اللحظات المنشورة ({{ approved|length }})</h2>
+    <div class="moments-grid">
+        {% for m in approved %}
+        <div class="moment-card">
+            {% if m.file_path.endswith('.mp4') or m.file_path.endswith('.mov') %}
+            <video controls src="{{ m.file_path }}"></video>
+            {% else %}
+            <img src="{{ m.file_path }}" alt="{{ m.caption }}">
+            {% endif %}
+            <div class="moment-info">
+                {% if m.caption %}<p>{{ m.caption }}</p>{% endif %}
+                <span class="moment-author">{{ m.full_name }}</span>
+                <div style="margin-top:0.5rem;">
+                   <a href="{{ url_for('admin_moment_download', moment_id=m.id) }}" class="btn-small">تحميل</a>
+                <a href="{{ url_for('admin_moment_delete', moment_id=m.id) }}" class="btn-small btn-danger" onclick="return confirm('متأكد؟')">حذف</a>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <p style="color:#888;">لسه مفيش لحظات منشورة</p>
+        {% endfor %}
+    </div>
+</section>
+{% endblock %}
