@@ -32,6 +32,15 @@
         {% endfor %}
     </div>
 
+    <section style="margin:1.5rem 0; padding:1rem; border:1px solid #e0b4b4; background:#fff8f8;">
+        <h2 style="color:#a33; margin-bottom:0.5rem;">حذف بيانات الطلاب التجريبية</h2>
+        <p style="margin-bottom:0.8rem;">يحذف كل الطلاب وبياناتهم وملفاتهم فقط، ولا يحذف السيشنز أو المواد.</p>
+        <form method="POST" action="{{ url_for('admin_delete_all_students') }}" onsubmit="return confirm('تحذير: سيتم حذف كل الطلاب وبياناتهم وملفاتهم نهائيًا. هل تريد المتابعة؟');" style="display:flex; gap:0.5rem; flex-wrap:wrap; align-items:center;">
+            <input type="text" name="confirmation" placeholder="اكتب: حذف الطلاب" required>
+            <button type="submit" class="btn-small btn-danger">حذف كل الطلاب</button>
+        </form>
+    </section>
+
     <h2 style="color:#2d6a4f; margin-bottom:0.8rem;">توزيع مسارات المديول الرابع</h2>
     <div class="stats">
         {% for track, count in track_counts.items() %}
