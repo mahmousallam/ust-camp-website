@@ -6,9 +6,24 @@
     <title>{% block title %}Agri Camp{% endblock %}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
-<body>
-    <nav class="navbar">
+{% set student_endpoints = ['student_dashboard', 'student_session_detail', 'moments_gallery', 'leaderboard', 'student_track_chat', 'student_track_chat_send', 'student_upload', 'student_certificate', 'student_moment_new', 'student_moment_viewers'] %}
+{% set is_student_area = request.endpoint in student_endpoints %}
+<body class="{% if is_student_area %}student-area{% endif %}">
+    <nav class="navbar {% if is_student_area %}student-navbar{% endif %}">
         <div class="nav-container">
+            {% if is_student_area %}
+            <a href="{{ url_for('student_dashboard') if session.get('student_id') else url_for('student_login') }}" class="logo student-logo" aria-label="الرئيسية">
+                <span class="student-logo-mark">A</span>
+                <span>Agri Camp</span>
+            </a>
+            <div class="nav-links student-desktop-links">
+                <a href="{{ url_for('student_dashboard') }}" class="{% if request.endpoint == 'student_dashboard' %}is-active{% endif %}">الرئيسية</a>
+                <a href="{{ url_for('student_dashboard') }}#account">حسابي</a>
+                <a href="{{ url_for('student_dashboard') }}#sessions" class="{% if request.endpoint == 'student_session_detail' %}is-active{% endif %}">الجلسات</a>
+                <a href="{{ url_for('moments_gallery') }}" class="{% if request.endpoint == 'moments_gallery' %}is-active{% endif %}">اللحظات</a>
+                <a href="{{ url_for('leaderboard') }}" class="{% if request.endpoint == 'leaderboard' %}is-active{% endif %}">الصدارة</a>
+            </div>
+            {% else %}
             <a href="{{ url_for('home') }}" class="logo">
                 <img src="{{ url_for('static', filename='img/agri-logo.png.png') }}" alt="لوجو Agri Camp" class="logo-img" onerror="this.style.display='none'; document.getElementById('logo-fallback').style.display='inline';">
                 <span id="logo-fallback" style="display:none;">UST</span>
@@ -21,8 +36,24 @@
                 <a href="{{ url_for('student_login') }}">دخول الطالب</a>
                 <a href="{{ url_for('register') }}" class="btn-nav">سجّل الآن</a>
             </div>
+            {% endif %}
         </div>
     </nav>
+
+    {% if is_student_area %}
+    <header class="student-page-header">
+        <div class="student-content-width">
+            <h1>{% block student_header %}{{ self.title() }}{% endblock %}</h1>
+        </div>
+    </header>
+    <nav class="student-mobile-tabs" aria-label="تنقل الطالب">
+        <a href="{{ url_for('student_dashboard') }}" class="{% if request.endpoint == 'student_dashboard' %}is-active{% endif %}"><span class="tab-icon">⌂</span><span>الرئيسية</span></a>
+        <a href="{{ url_for('student_dashboard') }}#account" class="student-account-tab"><span class="tab-icon">◉</span><span>حسابي</span></a>
+        <a href="{{ url_for('student_dashboard') }}#sessions" class="{% if request.endpoint == 'student_session_detail' %}is-active{% endif %}"><span class="tab-icon">▤</span><span>الجلسات</span></a>
+        <a href="{{ url_for('moments_gallery') }}" class="{% if request.endpoint == 'moments_gallery' %}is-active{% endif %}"><span class="tab-icon">▧</span><span>اللحظات</span></a>
+        <a href="{{ url_for('leaderboard') }}" class="{% if request.endpoint == 'leaderboard' %}is-active{% endif %}"><span class="tab-icon">♜</span><span>الصدارة</span></a>
+    </nav>
+    {% endif %}
 
     <main>
         {% with messages = get_flashed_messages(with_categories=true) %}

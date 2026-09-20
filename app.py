@@ -19,7 +19,8 @@ from reportlab.lib.units import cm
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}, r"/uploads/*": {"origins": "*"}, r"/materials/*": {"origins": "*"}})
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
-app.permanent_session_lifetime = timedelta(days=30)
+app.permanent_session_lifetime = timedelta(days=365)
+app.config["SESSION_REFRESH_EACH_REQUEST"] = True
 
 DB_NAME = "camp.db"
 UPLOAD_FOLDER = "uploads"
@@ -75,6 +76,13 @@ OFFICIAL_EMAIL = "ust.menoufiauniversity@gmail.com"
 @app.context_processor
 def inject_social_links():
     return {"social_links": SOCIAL_LINKS}
+
+
+@app.before_request
+def refresh_student_session():
+    if session.get("student_id"):
+        session.permanent = True
+        session.modified = True
 
 
 # ---------- إعدادات عامة (تقدر تعدلها) ----------
@@ -727,6 +735,9 @@ def leaderboard():
 
 @app.route("/student/login", methods=["GET", "POST"])
 def student_login():
+    if request.method == "GET" and session.get("student_id"):
+        return redirect(url_for("student_dashboard"))
+
     if request.method == "POST":
         email = request.form.get("email", "").strip()
         access_code = request.form.get("access_code", "").strip().upper()

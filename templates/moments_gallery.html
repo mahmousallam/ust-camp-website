@@ -2,33 +2,37 @@
 {% block title %}لحظات البرنامج{% endblock %}
 
 {% block content %}
-<section class="about" style="text-align:center;">
-    <h1 style="color:#2d6a4f;">لحظات البرنامج</h1>
-    <p>الاستوريز النشطة تفضل ظاهرة 24 ساعة، وكل اللحظات محفوظة في الأرشيف تحت</p>
-</section>
+<div class="student-content-width moments-page">
+    {% set my_story = stories | selectattr('is_mine') | list | first %}
+    <a class="your-moment-row student-card" href="{{ url_for('student_moment_new') if is_logged_in else url_for('student_login') }}">
+        <span class="your-moment-avatar">{% if my_story %}{{ my_story.student_name[0] }}{% else %}+{% endif %}<b>+</b></span>
+        <span><strong>لحظتك</strong><small>اضغط للإضافة</small></span>
+    </a>
 
-{% include "_stories_bar.html" %}
+    <h2 class="student-section-title">التحديثات الحديثة</h2>
+    {% set stories = stories | rejectattr('is_mine') | list %}
+    {% include "_stories_bar.html" %}
+    {% if not stories %}
+    <p class="student-muted empty-moments">لسه مفيش تحديثات من زمايلك</p>
+    {% endif %}
 
-{% if not stories %}
-<p style="text-align:center; color:#888; margin:1.5rem 0;">مفيش استوريز نشطة دلوقتي</p>
-{% endif %}
-
-<h2 style="color:#2d6a4f; margin:2rem 0 1rem;">الأرشيف الكامل</h2>
-<div class="moments-grid">
+    <h2 class="student-section-title page-section-title">الأرشيف الكامل</h2>
+    <div class="moments-grid">
     {% for m in archive %}
-    <div class="moment-card">
+    <a class="moment-card" href="{{ m.file_path }}" target="_blank" rel="noopener">
         {% if m.file_path.endswith('.mp4') or m.file_path.endswith('.mov') %}
-        <video controls src="{{ m.file_path }}"></video>
+        <video loading="lazy" muted playsinline src="{{ m.file_path }}"></video>
         {% else %}
-        <img src="{{ m.file_path }}" alt="{{ m.caption }}">
+        <img loading="lazy" src="{{ m.file_path }}" alt="{{ m.caption or 'لحظة من البرنامج' }}">
         {% endif %}
         <div class="moment-info">
             {% if m.caption %}<p>{{ m.caption }}</p>{% endif %}
             <span class="moment-author">{{ m.full_name }}</span>
         </div>
-    </div>
+    </a>
     {% else %}
-    <p style="text-align:center; color:#888;">لسه مفيش لحظات منشورة</p>
+    <p class="student-muted">لسه مفيش لحظات منشورة</p>
     {% endfor %}
+    </div>
 </div>
 {% endblock %}

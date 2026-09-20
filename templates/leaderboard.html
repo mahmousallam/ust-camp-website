@@ -2,40 +2,27 @@
 {% block title %}لوحة الصدارة{% endblock %}
 
 {% block content %}
-<section class="about" style="text-align:center;">
-    <h1 style="color:#2d6a4f;">لوحة الصدارة</h1>
-    <p>الطلاب اللي اختاروا يظهروا هنا (يقدر أي طالب يخفي نفسه من صفحة أكونته)</p>
-
-    <div style="display:flex; gap:0.5rem; justify-content:center; margin:1rem 0; flex-wrap:wrap;">
-        <a href="{{ url_for('leaderboard', period='all', view='individual') }}" class="btn-small {% if period=='all' and view=='individual' %}btn-active{% endif %}">كل الوقت - أفراد</a>
-        <a href="{{ url_for('leaderboard', period='month', view='individual') }}" class="btn-small {% if period=='month' and view=='individual' %}btn-active{% endif %}">الشهر ده - أفراد</a>
-        <a href="{{ url_for('leaderboard', period='all', view='team') }}" class="btn-small {% if view=='team' and period=='all' %}btn-active{% endif %}">كل الوقت - فرق</a>
-        <a href="{{ url_for('leaderboard', period='month', view='team') }}" class="btn-small {% if view=='team' and period=='month' %}btn-active{% endif %}">الشهر ده - فرق</a>
+<div class="student-content-width leaderboard-page">
+    <p class="privacy-note">الطلاب اللي اختاروا يظهروا هنا (يقدر أي طالب يخفي نفسه من صفحة أكونته)</p>
+    <div class="filter-group" aria-label="الفترة">
+        <a href="{{ url_for('leaderboard', period='all', view=view) }}" class="filter-chip {% if period == 'all' %}is-active{% endif %}">كل الوقت</a>
+        <a href="{{ url_for('leaderboard', period='month', view=view) }}" class="filter-chip {% if period == 'month' %}is-active{% endif %}">الشهر ده</a>
     </div>
-</section>
+    <div class="filter-group" aria-label="نوع الترتيب">
+        <a href="{{ url_for('leaderboard', period=period, view='individual') }}" class="filter-chip {% if view == 'individual' %}is-active{% endif %}">أفراد</a>
+        <a href="{{ url_for('leaderboard', period=period, view='team') }}" class="filter-chip {% if view == 'team' %}is-active{% endif %}">فرق</a>
+    </div>
 
-<table class="students-table">
-    <thead>
-        <tr>
-            <th>الترتيب</th>
-            <th>الاسم</th>
-            {% if view == 'individual' %}<th>المسار</th>{% endif %}
-            <th>النقاط</th>
-            {% if view == 'individual' %}<th>المستوى</th>{% endif %}
-        </tr>
-    </thead>
-    <tbody>
+    <div class="leaderboard-list">
         {% for b in board %}
-        <tr>
-            <td>{{ loop.index }}</td>
-            <td>{{ b.name }}</td>
-            {% if view == 'individual' %}<td>{{ b.track or '-' }}</td>{% endif %}
-            <td>{{ b.points }}</td>
-            {% if view == 'individual' %}<td>{{ b.level }}</td>{% endif %}
-        </tr>
+        <div class="leaderboard-card">
+            <span class="leaderboard-rank">{{ loop.index }}</span>
+            <div class="leaderboard-name"><strong>{{ b.name }}</strong>{% if view == 'individual' %}<span>{{ b.track or '-' }}</span>{% endif %}</div>
+            <strong class="leaderboard-points">{{ b.points }}</strong>
+        </div>
         {% else %}
-        <tr><td colspan="5">لسه مفيش نقاط مسجلة</td></tr>
+        <p class="student-muted">لسه مفيش نقاط مسجلة</p>
         {% endfor %}
-    </tbody>
-</table>
+    </div>
+</div>
 {% endblock %}
