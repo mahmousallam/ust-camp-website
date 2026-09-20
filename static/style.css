@@ -621,6 +621,8 @@ footer {
 }
 .student-card:hover { color: var(--app-primary-dark); }
 .student-dashboard { display: flex; flex-direction: column; gap: 1.25rem; }
+.student-section[hidden] { display: none !important; }
+.dashboard-link-card { padding: 1rem; color: var(--app-primary); font-weight: bold; }
 .student-home-section, .student-account-section { display: flex; flex-direction: column; gap: 0.85rem; }
 .student-greeting-row, .student-profile-head { display: flex; align-items: center; gap: 0.75rem; }
 .student-greeting-row { justify-content: space-between; }

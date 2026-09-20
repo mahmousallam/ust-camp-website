@@ -17,11 +17,11 @@
                 <span>Agri Camp</span>
             </a>
             <div class="nav-links student-desktop-links">
-                <a href="{{ url_for('student_dashboard') }}" class="{% if request.endpoint == 'student_dashboard' %}is-active{% endif %}">الرئيسية</a>
-                <a href="{{ url_for('student_dashboard') }}#account">حسابي</a>
-                <a href="{{ url_for('student_dashboard') }}#sessions" class="{% if request.endpoint == 'student_session_detail' %}is-active{% endif %}">الجلسات</a>
-                <a href="{{ url_for('moments_gallery') }}" class="{% if request.endpoint == 'moments_gallery' %}is-active{% endif %}">اللحظات</a>
-                <a href="{{ url_for('leaderboard') }}" class="{% if request.endpoint == 'leaderboard' %}is-active{% endif %}">الصدارة</a>
+                <a href="{{ url_for('student_dashboard') }}#home" class="student-tab" data-tab="home">الرئيسية</a>
+                <a href="{{ url_for('student_dashboard') }}#account" class="student-tab" data-tab="account">حسابي</a>
+                <a href="{{ url_for('student_dashboard') }}#sessions" class="student-tab" data-tab="sessions">الجلسات</a>
+                <a href="{{ url_for('student_dashboard') }}#moments" class="student-tab" data-tab="moments">اللحظات</a>
+                <a href="{{ url_for('student_dashboard') }}#leaderboard" class="student-tab" data-tab="leaderboard">الصدارة</a>
             </div>
             {% else %}
             <a href="{{ url_for('home') }}" class="logo">
@@ -47,11 +47,11 @@
         </div>
     </header>
     <nav class="student-mobile-tabs" aria-label="تنقل الطالب">
-        <a href="{{ url_for('student_dashboard') }}" class="{% if request.endpoint == 'student_dashboard' %}is-active{% endif %}"><span class="tab-icon">⌂</span><span>الرئيسية</span></a>
-        <a href="{{ url_for('student_dashboard') }}#account" class="student-account-tab"><span class="tab-icon">◉</span><span>حسابي</span></a>
-        <a href="{{ url_for('student_dashboard') }}#sessions" class="{% if request.endpoint == 'student_session_detail' %}is-active{% endif %}"><span class="tab-icon">▤</span><span>الجلسات</span></a>
-        <a href="{{ url_for('moments_gallery') }}" class="{% if request.endpoint == 'moments_gallery' %}is-active{% endif %}"><span class="tab-icon">▧</span><span>اللحظات</span></a>
-        <a href="{{ url_for('leaderboard') }}" class="{% if request.endpoint == 'leaderboard' %}is-active{% endif %}"><span class="tab-icon">♜</span><span>الصدارة</span></a>
+        <a href="{{ url_for('student_dashboard') }}#home" class="student-tab" data-tab="home"><span class="tab-icon">⌂</span><span>الرئيسية</span></a>
+        <a href="{{ url_for('student_dashboard') }}#account" class="student-tab" data-tab="account"><span class="tab-icon">◉</span><span>حسابي</span></a>
+        <a href="{{ url_for('student_dashboard') }}#sessions" class="student-tab" data-tab="sessions"><span class="tab-icon">▤</span><span>الجلسات</span></a>
+        <a href="{{ url_for('student_dashboard') }}#moments" class="student-tab" data-tab="moments"><span class="tab-icon">▧</span><span>اللحظات</span></a>
+        <a href="{{ url_for('student_dashboard') }}#leaderboard" class="student-tab" data-tab="leaderboard"><span class="tab-icon">♜</span><span>الصدارة</span></a>
     </nav>
     {% endif %}
 

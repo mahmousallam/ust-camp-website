@@ -3,18 +3,7 @@
 
 {% block content %}
 <div class="student-content-width student-dashboard">
-    {% include "_stories_bar.html" %}
-
-    {% if my_active_moments %}
-    <div class="student-card active-moments-card">
-        <strong>استوريهاتك النشطة</strong>
-        {% for m in my_active_moments %}
-        <a href="{{ url_for('student_moment_viewers', moment_id=m.id) }}">{{ m.caption or 'لحظة' }} - مين شافها</a>
-        {% endfor %}
-    </div>
-    {% endif %}
-
-    <section class="student-home-section">
+    <section id="home" class="student-section student-home-section">
         <div class="student-greeting-row">
             <h2>أهلاً {{ student.full_name }} 👋</h2>
             <div class="student-actions">
@@ -40,7 +29,7 @@
         {% endif %}
     </section>
 
-    <section id="account" class="student-account-section">
+    <section id="account" class="student-section student-account-section">
         <div class="student-profile-head">
             <div class="profile-avatar">
                 {% if student.avatar_url %}<img src="{{ student.avatar_url }}" alt="صورة {{ student.full_name }}">{% else %}{{ student.full_name[0] }}{% endif %}
@@ -70,7 +59,6 @@
             <p class="student-muted">لازم توصل لـ75% عشان تقدر تحمّل الشهادة</p>
             {% endif %}
         </div>
-    </section>
 
     {% if my_badges %}
     <h3 class="student-section-title">بادجاتك</h3>
@@ -89,7 +77,34 @@
         </label>
     </form>
 
-    <section id="sessions">
+    <h2 class="student-section-title page-section-title">تسليماتي وتوثيقاتي</h2>
+    <table class="students-table">
+        <thead>
+            <tr><th>العنوان</th><th>النوع</th><th>النقاط</th><th>التاريخ</th></tr>
+        </thead>
+        <tbody>
+            {% for sub in my_submissions %}
+            <tr><td>{{ sub.title }}</td><td>{{ sub.sub_type }}</td><td>{{ sub.points_awarded }}</td><td>{{ sub.submitted_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="4">لسه معملتش أي تسليم</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h2 class="student-section-title page-section-title">سجل النقاط</h2>
+    <table class="students-table">
+        <thead><tr><th>النشاط</th><th>النقاط</th><th>التاريخ</th></tr></thead>
+        <tbody>
+            {% for p in points_history %}
+            <tr><td>{{ p.activity }}</td><td>{{ p.points }}</td><td>{{ p.created_at }}</td></tr>
+            {% else %}
+            <tr><td colspan="3">لسه مفيش نقاط مسجلة</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    </section>
+
+    <section id="sessions" class="student-section student-sessions-section">
     <h2 class="student-section-title page-section-title">الجلسات</h2>
         <div class="student-list">
             {% for s in sessions_list %}
@@ -115,42 +130,54 @@
         </div>
     </section>
 
-    <h2 class="student-section-title page-section-title">تسليماتي وتوثيقاتي</h2>
-    <table class="students-table">
-        <thead>
-            <tr>
-                <th>العنوان</th>
-                <th>النوع</th>
-                <th>النقاط</th>
-                <th>التاريخ</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for sub in my_submissions %}
-            <tr>
-                <td>{{ sub.title }}</td>
-                <td>{{ sub.sub_type }}</td>
-                <td>{{ sub.points_awarded }}</td>
-                <td>{{ sub.submitted_at }}</td>
-            </tr>
-            {% else %}
-            <tr><td colspan="4">لسه معملتش أي تسليم</td></tr>
+    <section id="moments" class="student-section student-moments-section">
+        {% include "_stories_bar.html" %}
+        {% if my_active_moments %}
+        <div class="student-card active-moments-card">
+            <strong>استوريهاتك النشطة</strong>
+            {% for m in my_active_moments %}
+            <a href="{{ url_for('student_moment_viewers', moment_id=m.id) }}">{{ m.caption or 'لحظة' }} - مين شافها</a>
             {% endfor %}
-        </tbody>
-    </table>
+        </div>
+        {% endif %}
+        <a class="student-card dashboard-link-card" href="{{ url_for('moments_gallery') }}">فتح معرض اللحظات</a>
+    </section>
 
-    <h2 class="student-section-title page-section-title">سجل النقاط</h2>
-    <table class="students-table">
-        <thead>
-            <tr><th>النشاط</th><th>النقاط</th><th>التاريخ</th></tr>
-        </thead>
-        <tbody>
-            {% for p in points_history %}
-            <tr><td>{{ p.activity }}</td><td>{{ p.points }}</td><td>{{ p.created_at }}</td></tr>
-            {% else %}
-            <tr><td colspan="3">لسه مفيش نقاط مسجلة</td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+    <section id="leaderboard" class="student-section student-leaderboard-section">
+        <p class="student-muted">تابع ترتيبك وترتيب الفرق في لوحة الصدارة.</p>
+        <a class="student-card dashboard-link-card" href="{{ url_for('leaderboard') }}">فتح لوحة الصدارة</a>
+    </section>
+
 </div>
+<script>
+(() => {
+    const sections = [...document.querySelectorAll('.student-section')];
+    const tabs = [...document.querySelectorAll('.student-tab')];
+    const validTabs = new Set(sections.map((section) => section.id));
+
+    function activateSection(tabName, updateHistory = true) {
+        const activeTab = validTabs.has(tabName) ? tabName : 'home';
+        sections.forEach((section) => {
+            section.hidden = section.id !== activeTab;
+        });
+        tabs.forEach((tab) => {
+            tab.classList.toggle('is-active', tab.dataset.tab === activeTab);
+        });
+        if (updateHistory && window.location.hash !== `#${activeTab}`) {
+            window.history.pushState(null, '', `#${activeTab}`);
+        }
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    tabs.forEach((tab) => {
+        tab.addEventListener('click', (event) => {
+            event.preventDefault();
+            activateSection(tab.dataset.tab);
+        });
+    });
+    window.addEventListener('hashchange', () => activateSection(window.location.hash.slice(1), false));
+    window.addEventListener('popstate', () => activateSection(window.location.hash.slice(1), false));
+    activateSection(window.location.hash.slice(1), false);
+})();
+</script>
 {% endblock %}
