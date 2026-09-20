@@ -61,32 +61,6 @@ def upload_to_storage(file_storage, dest_filename):
     return f"{SUPABASE_URL}/storage/v1/object/public/{SUPABASE_BUCKET}/{dest_filename}"
 
 
-def delete_from_storage(file_path):
-    """يحذف ملفًا تابعًا لطالب من التخزين المحلي أو Supabase."""
-    if not file_path:
-        return
-    if file_path.startswith("/uploads/"):
-        try:
-            os.remove(os.path.join(UPLOAD_FOLDER, file_path.rsplit("/", 1)[-1]))
-        except FileNotFoundError:
-            pass
-        return
-    if not SUPABASE_URL or not SUPABASE_SERVICE_KEY or "/storage/v1/object/public/" not in file_path:
-        return
-
-    object_path = file_path.split(f"/storage/v1/object/public/{SUPABASE_BUCKET}/", 1)[-1]
-    try:
-        requests.delete(
-            f"{SUPABASE_URL}/storage/v1/object/{SUPABASE_BUCKET}/{object_path}",
-            headers={
-                "Authorization": f"Bearer {SUPABASE_SERVICE_KEY}",
-                "apikey": SUPABASE_SERVICE_KEY,
-            },
-            timeout=15,
-        )
-    except requests.RequestException:
-        pass
-
 # روابط السوشيال ميديا - لينكدإن هيتحط لاحقًا
 SOCIAL_LINKS = {
     "facebook": "https://www.facebook.com/profile.php?id=61570675637708",
@@ -1160,7 +1134,6 @@ def admin_delete(student_id):
     conn.execute("DELETE FROM moment_views WHERE moment_id IN (SELECT id FROM moments WHERE student_id = ?)", (student_id,))
     conn.execute("DELETE FROM moments WHERE student_id = ?", (student_id,))
     conn.execute("DELETE FROM session_comments WHERE student_id = ?", (student_id,))
-    conn.execute("DELETE FROM track_messages WHERE student_id = ?", (student_id,))
     conn.execute("DELETE FROM submissions WHERE student_id = ?", (student_id,))
     conn.execute("DELETE FROM points_log WHERE student_id = ?", (student_id,))
     conn.execute("DELETE FROM badges_log WHERE student_id = ?", (student_id,))
@@ -1168,44 +1141,6 @@ def admin_delete(student_id):
     conn.execute("DELETE FROM students WHERE id = ?", (student_id,))
     conn.commit()
     conn.close()
-    return redirect(url_for("admin_dashboard"))
-
-
-@app.route("/admin/delete-all-students", methods=["POST"])
-def admin_delete_all_students():
-    if not require_admin():
-        return redirect(url_for("admin_login"))
-
-    if request.form.get("confirmation", "").strip() != "حذف الطلاب":
-        flash("لم يتم الحذف: اكتب عبارة التأكيد المطلوبة بالضبط", "error")
-        return redirect(url_for("admin_dashboard"))
-
-    conn = get_db()
-    student_files = conn.execute("""
-        SELECT file_path FROM submissions
-        WHERE file_path IS NOT NULL AND file_path != ''
-        UNION ALL
-        SELECT file_path FROM moments
-        WHERE file_path IS NOT NULL AND file_path != ''
-    """).fetchall()
-
-    for file_row in student_files:
-        delete_from_storage(file_row["file_path"])
-
-    conn.execute("DELETE FROM moment_likes")
-    conn.execute("DELETE FROM moment_views")
-    conn.execute("DELETE FROM moments")
-    conn.execute("DELETE FROM session_comments")
-    conn.execute("DELETE FROM track_messages")
-    conn.execute("DELETE FROM session_ratings")
-    conn.execute("DELETE FROM submissions")
-    conn.execute("DELETE FROM points_log")
-    conn.execute("DELETE FROM badges_log")
-    conn.execute("DELETE FROM api_tokens")
-    conn.execute("DELETE FROM students")
-    conn.commit()
-    conn.close()
-    flash("تم حذف كل الطلاب وبياناتهم وملفاتهم. السيشنز لم تتأثر", "success")
     return redirect(url_for("admin_dashboard"))
 
 
