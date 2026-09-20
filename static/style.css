@@ -729,14 +729,14 @@ footer {
         z-index: 900;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        padding: 0.35rem 0.25rem calc(0.35rem + env(safe-area-inset-bottom));
+        padding: 0.35rem calc(0.25rem + env(safe-area-inset-right)) calc(0.35rem + env(safe-area-inset-bottom)) calc(0.25rem + env(safe-area-inset-left));
         background: var(--app-card);
         border-top: 1px solid var(--app-border);
         box-shadow: 0 -2px 8px rgba(0,0,0,0.06);
     }
     .student-mobile-tabs a { min-height: 44px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 0.05rem; color: var(--app-muted); text-decoration: none; font-size: 0.67rem; }
     .student-mobile-tabs a.is-active, .student-mobile-tabs a:focus { color: var(--app-primary); }
-    .tab-icon { height: 25px; font-size: 1.35rem; line-height: 1.1; }
+    .tab-icon { width: 24px; height: 24px; display: block; color: currentColor; }
     .student-greeting-row { align-items: flex-start; flex-direction: column; }
     .student-actions { width: 100%; }
     .student-actions .btn-small { flex: 1; justify-content: center; }

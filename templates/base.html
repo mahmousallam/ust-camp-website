@@ -47,11 +47,11 @@
         </div>
     </header>
     <nav class="student-mobile-tabs" aria-label="تنقل الطالب">
-        <a href="{{ url_for('student_dashboard') }}#home" class="student-tab" data-tab="home"><span class="tab-icon">⌂</span><span>الرئيسية</span></a>
-        <a href="{{ url_for('student_dashboard') }}#account" class="student-tab" data-tab="account"><span class="tab-icon">◉</span><span>حسابي</span></a>
-        <a href="{{ url_for('student_dashboard') }}#sessions" class="student-tab" data-tab="sessions"><span class="tab-icon">▤</span><span>الجلسات</span></a>
-        <a href="{{ url_for('student_dashboard') }}#moments" class="student-tab" data-tab="moments"><span class="tab-icon">▧</span><span>اللحظات</span></a>
-        <a href="{{ url_for('student_dashboard') }}#leaderboard" class="student-tab" data-tab="leaderboard"><span class="tab-icon">♜</span><span>الصدارة</span></a>
+        <a href="{{ url_for('student_dashboard') }}#home" class="student-tab" data-tab="home"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10.8 12 3l9 7.8v9.2a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg><span>الرئيسية</span></a>
+        <a href="{{ url_for('student_dashboard') }}#account" class="student-tab" data-tab="account"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="12" cy="9" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M7.5 18c.8-2.2 2.3-3.3 4.5-3.3s3.7 1.1 4.5 3.3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>حسابي</span></a>
+        <a href="{{ url_for('student_dashboard') }}#sessions" class="student-tab" data-tab="sessions"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/><path d="M4 5.5v15M8 7h8M8 10h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>الجلسات</span></a>
+        <a href="{{ url_for('student_dashboard') }}#moments" class="student-tab" data-tab="moments"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="9" r="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4.5 17 4.5-4.5 3 3 2.2-2.2 5.3 5.2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>اللحظات</span></a>
+        <a href="{{ url_for('student_dashboard') }}#leaderboard" class="student-tab" data-tab="leaderboard"><svg class="tab-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 20h8M12 17V6M7 6h10M9 6V4h6v2M6 9H4v5h2M18 9h2v5h-2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/><path d="M8 17h8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span>الصدارة</span></a>
     </nav>
     {% endif %}
 
