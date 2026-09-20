@@ -7,7 +7,7 @@
 
     {% if not smtp_configured %}
     <div class="flash flash-error" style="margin-bottom:1rem;">
-        إعدادات الإيميل مش متظبطة على السيرفر لسه. اضبط BREVO_API_KEY، أو متغيرات SMTP_HOST وSMTP_USER وSMTP_PASS.
+        إعدادات الإيميل مش متظبطة على السيرفر لسه. اضبط BREVO_API_KEY وBREVO_SENDER_EMAIL، أو متغيرات SMTP_HOST وSMTP_USER وSMTP_PASS.
         الإرسال مش هيشتغل غير بعد ضبط أحد الخيارين.
     </div>
     {% endif %}

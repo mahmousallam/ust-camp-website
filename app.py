@@ -19,11 +19,13 @@ from reportlab.lib.units import cm
 app = Flask(__name__)
 CORS(app, resources={r"/api/*": {"origins": "*"}, r"/uploads/*": {"origins": "*"}, r"/materials/*": {"origins": "*"}})
 app.secret_key = os.environ.get("SECRET_KEY", "change-this-secret-key")
+app.permanent_session_lifetime = timedelta(days=30)
 
 DB_NAME = "camp.db"
 UPLOAD_FOLDER = "uploads"
 MATERIALS_FOLDER = "materials"
 ALLOWED_EXTENSIONS = {"pdf", "png", "jpg", "jpeg", "docx", "pptx", "xlsx", "mp4", "mov"}
+SESSION_IMAGE_EXTENSIONS = {"png", "jpg", "jpeg", "webp"}
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
 os.makedirs(MATERIALS_FOLDER, exist_ok=True)
 
@@ -144,7 +146,8 @@ def generate_access_code():
     return "".join(secrets.choice(string.ascii_uppercase + string.digits) for _ in range(8))
 
 
-BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "")
+BREVO_API_KEY = os.environ.get("BREVO_API_KEY", "").strip()
+BREVO_SENDER_EMAIL = os.environ.get("BREVO_SENDER_EMAIL", OFFICIAL_EMAIL).strip()
 
 
 def send_email(to_email, subject, body):
@@ -159,15 +162,19 @@ def send_email(to_email, subject, body):
                     "content-type": "application/json",
                 },
                 json={
-                    "sender": {"name": "UST Menoufia Program", "email": SMTP_FROM or OFFICIAL_EMAIL},
+                    "sender": {"name": "UST Menoufia Program", "email": BREVO_SENDER_EMAIL},
                     "to": [{"email": to_email}],
                     "subject": subject,
                     "textContent": body,
                 },
                 timeout=15,
             )
-            return 200 <= resp.status_code < 300
+            if 200 <= resp.status_code < 300:
+                return True
+            app.logger.error("Brevo email failed: status=%s response=%s", resp.status_code, resp.text[:500])
+            return False
         except requests.RequestException:
+            app.logger.exception("Brevo email request failed")
             return False
 
     if not SMTP_HOST or not SMTP_USER or not SMTP_PASS:
@@ -183,6 +190,7 @@ def send_email(to_email, subject, body):
             smtp.sendmail(message["From"], [to_email], message.as_string())
         return True
     except (OSError, smtplib.SMTPException):
+        app.logger.exception("SMTP email failed")
         return False
 
 
@@ -321,6 +329,7 @@ def init_db():
             created_at TEXT NOT NULL
         )
     """)
+    conn.execute("ALTER TABLE sessions ADD COLUMN IF NOT EXISTS image_url TEXT")
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS submissions (
@@ -728,6 +737,7 @@ def student_login():
         conn.close()
 
         if student:
+            session.permanent = True
             session["student_id"] = student["id"]
             return redirect(url_for("student_dashboard"))
         else:
@@ -1191,12 +1201,23 @@ def admin_session_new():
             flash("لازم تحدد اسم السيشن والمديول", "error")
             return render_template("admin_session_form.html", modules=MODULES)
 
+        session_image = request.files.get("session_image")
+        image_url = None
+
+        if session_image and session_image.filename:
+            image_extension = session_image.filename.rsplit(".", 1)[-1].lower() if "." in session_image.filename else ""
+            if image_extension not in SESSION_IMAGE_EXTENSIONS:
+                flash("صورة السيشن لازم تكون PNG أو JPG أو JPEG أو WEBP", "error")
+                return render_template("admin_session_form.html", modules=MODULES)
+            filename = secure_filename(f"session_{secrets.token_hex(8)}.{image_extension}")
+            image_url = upload_to_storage(session_image, filename)
+
         conn = get_db()
         conn.execute(
-            """INSERT INTO sessions (module_number, title, session_date, instructor, description, recording_url, material_url, assignment_text, created_at)
-               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+            """INSERT INTO sessions (module_number, title, session_date, instructor, description, recording_url, material_url, assignment_text, image_url, created_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             (module_number, title, session_date, instructor, description, recording_url, material_url, assignment_text,
-             datetime.now().strftime("%Y-%m-%d %H:%M"))
+             image_url, datetime.now().strftime("%Y-%m-%d %H:%M"))
         )
         conn.commit()
         conn.close()

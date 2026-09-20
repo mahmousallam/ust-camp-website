@@ -3,55 +3,191 @@
 
 {% block content %}
 <section class="hero">
+    <img src="{{ url_for('static', filename='img/logo.png') }}" alt="UST Menoufia" class="hero-logo">
     <h1>الكامب الطلابي</h1>
-    <p class="subtitle">برنامج تدريبي لمدة 3 شهور لكل طلاب الجامعة</p>
+    <p class="hero-program-name">UST Menoufia Agriculture Career &amp; Skills Program</p>
+    <p class="subtitle">برنامج تدريبي لمدة 4 شهور لكل طلاب الجامعة</p>
+    <div class="hero-actions">
     {% if registration_open %}
-    <a href="{{ url_for('register') }}" class="btn-main">سجّل دلوقتي</a>
-    <p style="font-size:0.85rem; color:#888; margin-top:0.8rem;">التسجيل متاح لغاية {{ deadline.strftime('%Y-%m-%d') }}</p>
+    <a href="{{ url_for('register') }}" class="btn-main hero-primary">سجّل الآن</a>
     {% else %}
-    <p style="color:#c0392b; font-weight:bold;">التسجيل مقفول حاليًا</p>
+    <p class="registration-closed">التسجيل مقفول حاليًا</p>
     {% endif %}
+    <a href="#modules" class="hero-secondary">شوف المديولات</a>
+    </div>
+    <div class="countdown-card" data-registration-countdown>
+        <span class="countdown-label">التسجيل مستمر حتى 15 أكتوبر 2026</span>
+        <div class="countdown-values" aria-live="polite">
+            <div><strong data-countdown-days>--</strong><span>يوم</span></div>
+            <div><strong data-countdown-hours>--</strong><span>ساعة</span></div>
+            <div><strong data-countdown-minutes>--</strong><span>دقيقة</span></div>
+        </div>
+    </div>
+</section>
+
+<section class="stats-strip" aria-label="ملخص البرنامج">
+    <div><strong>4 شهور</strong><span>مدة البرنامج</span></div>
+    <div><strong>6</strong><span>مديولات</span></div>
+    <div><strong>8-10</strong><span>ورش</span></div>
+    <div><strong>3</strong><span>زيارات ميدانية</span></div>
+    <div><strong>معتمدة</strong><span>شهادات</span></div>
 </section>
 
 <section class="about">
     <h2>عن الكامب</h2>
     <p>
-        الكامب برنامج تدريبي شامل يستمر 3 شهور، يضم 6 مديولات. أول 4 مديولات
+        الكامب برنامج تدريبي شامل يستمر 4 شهور، يضم 6 مديولات. أول 4 مديولات
         كورسات وتدريبات عامة لكل الطلاب أيًا كان تخصصهم، ومن المديول الخامس
         هيتم توزيع الطلاب حسب تخصص كل واحد.
     </p>
 </section>
 
-<section class="modules">
+<section class="modules" id="modules">
     <h2>المديولات</h2>
     <div class="modules-grid">
         {% for m in modules %}
-        <div class="module-card">
-            <span class="module-number">{{ m.number }}</span>
+        <article class="module-card{% if m.number == 4 %} module-card-featured{% endif %}">
+            {% if m.number == 4 %}<span class="module-badge">الأهم</span>{% endif %}
+            <div class="module-icon" aria-hidden="true">
+                {% if m.number == 1 %}
+                <svg viewBox="0 0 24 24"><path d="M12 3 4 6v5c0 5 3.4 8.6 8 10 4.6-1.4 8-5 8-10V6l-8-3Zm0 4 4 1.5V11c0 2.8-1.7 5-4 6.1-2.3-1.1-4-3.3-4-6.1V8.5L12 7Zm-1 2v4h2V9h-2Zm0 5v2h2v-2h-2Z"/></svg>
+                {% elif m.number == 2 %}
+                <svg viewBox="0 0 24 24"><path d="M4 5h16v10H4V5Zm-2-2v14h8v2H7v2h10v-2h-3v-2h8V3H2Zm4 3v6h12V6H6Zm2 1h3v4H8V7Zm5 0h3v1h-3V7Zm0 2h3v1h-3V9Z"/></svg>
+                {% elif m.number == 3 %}
+                <svg viewBox="0 0 24 24"><path d="m14.7 3.3 6 6-1.4 1.4-1.6-1.6-4.4 4.4 1.6 1.6-1.4 1.4-6-6 1.4-1.4 1.6 1.6 4.4-4.4-1.6-1.6 1.4-1.4ZM5 14l5 5-1.5 1.5-2-2-2 2L3 19l2-2-2-2L5 14Z"/></svg>
+                {% elif m.number == 4 %}
+                <svg viewBox="0 0 24 24"><path d="M5 20h14v2H5v-2ZM6 18h12l-1-9H7l-1 9Zm3-11h6V5H9v2Zm-1-4h8v2H8V3Zm-3 6h2l-1 7H4l1-7Zm13 0h2l1 7h-3l-1-7Z"/></svg>
+                {% elif m.number == 5 %}
+                <svg viewBox="0 0 24 24"><path d="M12 2a8 8 0 0 0-8 8c0 5.5 8 12 8 12s8-6.5 8-12a8 8 0 0 0-8-8Zm0 11a3 3 0 1 1 0-6 3 3 0 0 1 0 6Z"/></svg>
+                {% else %}
+                <svg viewBox="0 0 24 24"><path d="M4 5h16v12H4V5Zm2 2v8h12V7H6Zm-3 12h18v2H3v-2Zm5-6 2-2 2 1.5L15 9l3 4H6l2-2Z"/></svg>
+                {% endif %}
+            </div>
             <h3>{{ m.title }}</h3>
-            <p style="font-size:0.85rem; color:#666; margin-top:0.5rem;">{{ m.desc }}</p>
-        </div>
+            <div class="module-tags">
+                {% if m.number == 1 %}
+                <span>Orientation</span><span>Team Building</span><span>LinkedIn</span><span>CV Writing</span><span>Communication</span>
+                {% elif m.number == 2 %}
+                <span>AI Tools</span><span>Excel</span><span>Google Workspace</span><span>Canva</span><span>Git &amp; GitHub</span>
+                {% elif m.number == 3 %}
+                <span>Scientific Research</span><span>Google Scholar</span><span>PubMed</span><span>Mendeley</span><span>Presentation</span>
+                {% elif m.number == 4 %}
+                <span class="track-biotech">Biotechnology</span><span class="track-food">Food Science</span><span class="track-micro">Microbiology</span><span class="track-soil">Soil</span><span class="track-animal">Animal Production</span><span class="track-plant">Plant</span>
+                {% elif m.number == 5 %}
+                <span>Company Visit</span><span>Modern Farm</span><span>Research Center</span><span>HR Session</span><span>Alumni Talk</span>
+                {% else %}
+                <span>Interview Skills</span><span>Personal Branding</span><span>Scholarships</span><span>Internships</span><span>Freelancing</span>
+                {% endif %}
+            </div>
+        </article>
         {% endfor %}
+    </div>
+</section>
+
+<section class="program-timeline">
+    <h2>خطة البرنامج</h2>
+    <div class="timeline">
+        <article class="timeline-item"><span class="timeline-dot">أكتوبر</span><div><p>التسجيل، Orientation، LinkedIn وCV، AI، Excel</p></div></article>
+        <article class="timeline-item"><span class="timeline-dot">نوفمبر</span><div><p>البحث العلمي، Mendeley، Google Scholar، Presentation Skills</p></div></article>
+        <article class="timeline-item"><span class="timeline-dot">ديسمبر</span><div><p>الورش العملية: PCR، Food Safety، Microbiology، Hydroponics</p></div></article>
+        <article class="timeline-item"><span class="timeline-dot">يناير</span><div><p>Career Day، زيارة شركة، Interview Skills، حفل التخرج</p></div></article>
     </div>
 </section>
 
 <section class="about">
     <h2>نظام النقاط</h2>
-    <p>كل طالب بيجمع نقاط طول البرنامج: حضور ورشة (10)، مشاركة في نقاش (5)، حضور زيارة (15)، تنظيم فعالية (20)، مشروع صغير (30)، الفوز في مسابقة (50). تابع نقاطك من صفحة "دخول الطالب"، وشوف ترتيبك في "لوحة الصدارة".</p>
+    <div class="points-grid">
+        <article class="point-card"><span class="point-icon">🎓</span><h3>حضور ورشة</h3><strong>10</strong><small>نقاط</small></article>
+        <article class="point-card"><span class="point-icon">💬</span><h3>مشاركة في نقاش</h3><strong>5</strong><small>نقاط</small></article>
+        <article class="point-card"><span class="point-icon">📍</span><h3>حضور زيارة</h3><strong>15</strong><small>نقاط</small></article>
+        <article class="point-card"><span class="point-icon">🤝</span><h3>تنظيم فعالية</h3><strong>20</strong><small>نقاط</small></article>
+        <article class="point-card"><span class="point-icon">🚀</span><h3>مشروع صغير</h3><strong>30</strong><small>نقاط</small></article>
+        <article class="point-card"><span class="point-icon">🏆</span><h3>الفوز في مسابقة</h3><strong>50</strong><small>نقاط</small></article>
+    </div>
+    <div class="points-footer"><p>تابع نقاطك من صفحة دخول الطالب وشوف ترتيبك في لوحة الصدارة</p><a href="{{ url_for('leaderboard') }}" class="btn-small">لوحة الصدارة</a></div>
 </section>
 
 <section class="about">
     <h2>المشروع الختامي والشهادات</h2>
-    <p>
-        في نهاية البرنامج، كل فريق بيقدم مشروع ختامي (Capstone) في Demo Day.
-        الشهادات بتتقسم لمستويات: Participation، Completion، Outstanding Participant، وBest Team Award.
-    </p>
+    <p class="certificate-intro">في نهاية البرنامج، كل فريق بيقدم مشروع ختامي (Capstone) في Demo Day.</p>
+    <div class="certificates-grid">
+        <article class="certificate-card"><span class="certificate-icon">📜</span><h3>Participation</h3><p>لمن حضر الحد الأدنى من الأنشطة</p></article>
+        <article class="certificate-card"><span class="certificate-icon">✅</span><h3>Completion</h3><p>حضور 75% + المشروع الختامي</p></article>
+        <article class="certificate-card"><span class="certificate-icon">⭐</span><h3>Outstanding Participant</h3><p>لأفضل المشاركين</p></article>
+        <article class="certificate-card"><span class="certificate-icon">🏅</span><h3>Best Team Award</h3><p>لأفضل مشروع</p></article>
+    </div>
+</section>
+
+<section class="faq-section" id="faq">
+    <h2>الأسئلة الشائعة</h2>
+    <div class="faq-list">
+        <details class="faq-item">
+            <summary>مين يقدر يسجل؟</summary>
+            <p>كل طلاب الجامعة، مش بس الزراعة.</p>
+        </details>
+        <details class="faq-item">
+            <summary>هل البرنامج مجاني؟</summary>
+            <p>أيوه، مجاني بالكامل.</p>
+        </details>
+        <details class="faq-item">
+            <summary>لازم أحضر كل الورش؟</summary>
+            <p>لا، بتختار مسار أو اتنين في الورش العملية.</p>
+        </details>
+        <details class="faq-item">
+            <summary>إزاي أحصل على الشهادة؟</summary>
+            <p>حضور 75% + المشروع الختامي للـ Completion.</p>
+        </details>
+        <details class="faq-item">
+            <summary>التسجيل بيقفل إمتى؟</summary>
+            <p>15 أكتوبر 2026.</p>
+        </details>
+    </div>
 </section>
 
 {% if registration_open %}
-<section class="cta">
+<section class="cta" id="final-cta">
     <h2>مستني إيه؟</h2>
-    <a href="{{ url_for('register') }}" class="btn-main">انضم للكامب</a>
+    <a href="{{ url_for('register') }}" class="btn-main">سجّل الآن</a>
 </section>
 {% endif %}
+{% if registration_open %}
+<a href="{{ url_for('register') }}" class="mobile-register-cta">سجّل الآن</a>
+{% endif %}
+<script>
+    const registrationDeadline = '2026-10-15T23:59:59';
+    const countdownCard = document.querySelector('[data-registration-countdown]');
+    const countdownDays = document.querySelector('[data-countdown-days]');
+    const countdownHours = document.querySelector('[data-countdown-hours]');
+    const countdownMinutes = document.querySelector('[data-countdown-minutes]');
+
+    function updateRegistrationCountdown() {
+        if (!countdownCard) return;
+
+        const remaining = new Date(registrationDeadline).getTime() - Date.now();
+        if (remaining <= 0) {
+            countdownCard.innerHTML = '<strong class="countdown-ended">التسجيل مقفول</strong>';
+            return;
+        }
+
+        const totalMinutes = Math.floor(remaining / 60000);
+        const days = Math.floor(totalMinutes / (60 * 24));
+        const hours = Math.floor((totalMinutes % (60 * 24)) / 60);
+        const minutes = totalMinutes % 60;
+        countdownDays.textContent = days;
+        countdownHours.textContent = String(hours).padStart(2, '0');
+        countdownMinutes.textContent = String(minutes).padStart(2, '0');
+    }
+
+    updateRegistrationCountdown();
+    setInterval(updateRegistrationCountdown, 1000);
+
+    const mobileRegisterCta = document.querySelector('.mobile-register-cta');
+    const finalCta = document.querySelector('#final-cta');
+    if (mobileRegisterCta && finalCta && 'IntersectionObserver' in window) {
+        const ctaObserver = new IntersectionObserver(([entry]) => {
+            mobileRegisterCta.classList.toggle('is-hidden', entry.isIntersecting);
+        }, { threshold: 0.15 });
+        ctaObserver.observe(finalCta);
+    }
+</script>
 {% endblock %}

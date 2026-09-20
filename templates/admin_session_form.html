@@ -4,7 +4,7 @@
 {% block content %}
 <section class="form-section">
     <h1>إضافة سيشن جديدة</h1>
-    <form method="POST" class="camp-form">
+    <form method="POST" class="camp-form" enctype="multipart/form-data">
         <label>المديول *</label>
         <select name="module_number" required>
             {% for m in modules %}
@@ -23,6 +23,10 @@
 
         <label>الوصف</label>
         <textarea name="description" rows="3"></textarea>
+
+        <label>صورة السيشن / Thumbnail</label>
+        <input type="file" name="session_image" accept="image/png,image/jpeg,image/webp">
+        <small style="color:#666;">اختياري - PNG أو JPG أو JPEG أو WEBP</small>
 
         <label>رابط التسجيل/الفيديو (يوتيوب أو جوجل درايف)</label>
         <input type="url" name="recording_url" placeholder="https://...">
