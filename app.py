@@ -323,6 +323,7 @@ def init_db():
             created_at TEXT NOT NULL
         )
     """)
+    conn.execute("ALTER TABLE students ADD COLUMN IF NOT EXISTS avatar_url TEXT")
 
     conn.execute("""
         CREATE TABLE IF NOT EXISTS sessions (
@@ -563,7 +564,7 @@ def get_active_stories(conn, viewer_id):
     """اللحظات المعتمدة خلال آخر 24 ساعة، مجمّعة حسب الطالب"""
     cutoff = (datetime.now() - timedelta(hours=24)).strftime("%Y-%m-%d %H:%M")
     rows = conn.execute("""
-        SELECT m.*, s.full_name FROM moments m
+        SELECT m.*, s.full_name, s.avatar_url FROM moments m
         JOIN students s ON s.id = m.student_id
         WHERE m.is_approved = 1 AND m.created_at >= ?
         ORDER BY m.student_id, m.created_at
@@ -573,7 +574,7 @@ def get_active_stories(conn, viewer_id):
     for r in rows:
         sid = r["student_id"]
         if sid not in grouped:
-            grouped[sid] = {"student_id": sid, "student_name": r["full_name"], "moments": [], "is_mine": (viewer_id == sid)}
+            grouped[sid] = {"student_id": sid, "student_name": r["full_name"], "avatar_url": r["avatar_url"], "moments": [], "is_mine": (viewer_id == sid)}
         seen = False
         liked = False
         if viewer_id:
@@ -841,6 +842,30 @@ def student_settings():
     conn.commit()
     conn.close()
     flash("تم تحديث إعداداتك", "success")
+    return redirect(url_for("student_dashboard"))
+
+
+@app.route("/student/avatar", methods=["POST"])
+def student_avatar():
+    conn = get_db()
+    student = current_student(conn)
+    if not student:
+        conn.close()
+        return redirect(url_for("student_login"))
+
+    photo = request.files.get("avatar")
+    extension = photo.filename.rsplit(".", 1)[-1].lower() if photo and photo.filename else ""
+    if not photo or not photo.filename or extension not in SESSION_IMAGE_EXTENSIONS:
+        flash("اختار صورة بصيغة PNG أو JPG أو JPEG", "error")
+        conn.close()
+        return redirect(url_for("student_dashboard"))
+
+    filename = secure_filename(f"avatar_{student['id']}_{secrets.token_hex(4)}.{extension}")
+    avatar_url = upload_to_storage(photo, filename)
+    conn.execute("UPDATE students SET avatar_url = ? WHERE id = ?", (avatar_url, student["id"]))
+    conn.commit()
+    conn.close()
+    flash("تم تحديث صورة الحساب", "success")
     return redirect(url_for("student_dashboard"))
 
 
@@ -1511,14 +1536,8 @@ def moments_gallery():
     conn = get_db()
     viewer_id = session.get("student_id")
     stories = get_active_stories(conn, viewer_id)
-    archive = conn.execute("""
-        SELECT m.*, s.full_name FROM moments m
-        JOIN students s ON s.id = m.student_id
-        WHERE m.is_approved = 1
-        ORDER BY m.created_at DESC
-    """).fetchall()
     conn.close()
-    return render_template("moments_gallery.html", stories=stories, archive=archive,
+    return render_template("moments_gallery.html", stories=stories,
                             is_logged_in=bool(viewer_id))
 
 

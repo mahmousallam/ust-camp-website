@@ -3,7 +3,9 @@
     {% for s in stories %}
     <div class="story-circle {% if not s.has_unseen %}story-seen{% endif %}" onclick="openStory({{ loop.index0 }})">
         <div class="story-ring">
-            <div class="story-avatar">{{ s.student_name[0] }}</div>
+            <div class="story-avatar">
+                {% if s.avatar_url %}<img src="{{ s.avatar_url }}" alt="صورة {{ s.student_name }}">{% else %}{{ s.student_name[0] }}{% endif %}
+            </div>
             {% if s.is_mine %}<span class="story-views-badge">{{ s.views_count }}</span>{% endif %}
         </div>
         <span class="story-name">{{ s.student_name.split(' ')[0] }}</span>

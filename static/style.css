@@ -530,6 +530,13 @@ footer {
 }
 
 @media (max-width: 700px) {
+    .navbar:not(.student-navbar) { padding: 0.75rem 1rem; }
+    .navbar:not(.student-navbar) .nav-container { display: block; }
+    .navbar:not(.student-navbar) .logo { justify-content: center; margin-bottom: 0.7rem; font-size: 1.15rem; }
+    .navbar:not(.student-navbar) .logo-img { height: 32px; }
+    .navbar:not(.student-navbar) .nav-links { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.4rem; }
+    .navbar:not(.student-navbar) .nav-links a { min-height: 44px; display: flex; align-items: center; justify-content: center; margin: 0; padding: 0.5rem 0.35rem; border: 1px solid rgba(255,255,255,0.2); border-radius: 6px; text-align: center; font-size: 0.82rem; line-height: 1.3; }
+    .navbar:not(.student-navbar) .nav-links .btn-nav { grid-column: 1 / -1; border: 0; }
     .hero { padding: 3rem 1rem 2.5rem; border-radius: 0 0 14px 14px; }
     .about, .modules, .cta, .program-timeline, .faq-section { margin: var(--space-mobile-section) 0; }
     .hero-logo { width: 72px; height: 72px; }
@@ -649,9 +656,13 @@ footer {
     font-size: 1.35rem;
     font-weight: bold;
 }
+.profile-avatar { overflow: hidden; }
+.profile-avatar img, .story-avatar img { width: 100%; height: 100%; display: block; object-fit: cover; border-radius: 50%; }
 .student-profile-head { padding: 0.2rem 0; }
 .student-profile-head > div:nth-child(2) { flex: 1; }
-.profile-change { border: 0; padding: 0; background: transparent; color: var(--app-muted); font: inherit; font-size: 0.75rem; cursor: not-allowed; }
+.avatar-form { margin: 0; }
+.profile-change { display: inline-flex; align-items: center; min-height: 30px; border: 0; padding: 0; background: transparent; color: var(--app-muted); font: inherit; font-size: 0.75rem; cursor: pointer; }
+.profile-change input { position: absolute; width: 1px; height: 1px; opacity: 0; pointer-events: none; }
 .logout-link { color: var(--app-danger) !important; font-size: 0.85rem; min-height: 44px; display: inline-flex; align-items: center; }
 .progress-card { padding: 1rem; }
 .student-area .progress-outer { height: 24px; border-radius: 4px; background: var(--app-border); }

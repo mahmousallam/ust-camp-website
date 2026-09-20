@@ -15,24 +15,5 @@
     {% if not stories %}
     <p class="student-muted empty-moments">لسه مفيش تحديثات من زمايلك</p>
     {% endif %}
-
-    <h2 class="student-section-title page-section-title">الأرشيف الكامل</h2>
-    <div class="moments-grid">
-    {% for m in archive %}
-    <a class="moment-card" href="{{ m.file_path }}" target="_blank" rel="noopener">
-        {% if m.file_path.endswith('.mp4') or m.file_path.endswith('.mov') %}
-        <video loading="lazy" muted playsinline src="{{ m.file_path }}"></video>
-        {% else %}
-        <img loading="lazy" src="{{ m.file_path }}" alt="{{ m.caption or 'لحظة من البرنامج' }}">
-        {% endif %}
-        <div class="moment-info">
-            {% if m.caption %}<p>{{ m.caption }}</p>{% endif %}
-            <span class="moment-author">{{ m.full_name }}</span>
-        </div>
-    </a>
-    {% else %}
-    <p class="student-muted">لسه مفيش لحظات منشورة</p>
-    {% endfor %}
-    </div>
 </div>
 {% endblock %}

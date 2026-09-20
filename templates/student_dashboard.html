@@ -42,10 +42,14 @@
 
     <section id="account" class="student-account-section">
         <div class="student-profile-head">
-            <div class="profile-avatar">{{ student.full_name[0] }}</div>
+            <div class="profile-avatar">
+                {% if student.avatar_url %}<img src="{{ student.avatar_url }}" alt="صورة {{ student.full_name }}">{% else %}{{ student.full_name[0] }}{% endif %}
+            </div>
             <div>
                 <h2>أهلاً، {{ student.full_name }}</h2>
-                <button type="button" class="profile-change" disabled>تغيير الصورة</button>
+                <form method="POST" action="{{ url_for('student_avatar') }}" enctype="multipart/form-data" class="avatar-form">
+                    <label class="profile-change">تغيير الصورة<input type="file" name="avatar" accept="image/png,image/jpeg" onchange="this.form.submit()"></label>
+                </form>
             </div>
             <a href="{{ url_for('student_logout') }}" class="logout-link">خروج</a>
         </div>
