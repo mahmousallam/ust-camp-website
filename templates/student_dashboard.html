@@ -78,27 +78,27 @@
     </form>
 
     <h2 class="student-section-title page-section-title">تسليماتي وتوثيقاتي</h2>
-    <table class="students-table">
+    <table class="students-table student-data-table submissions-table">
         <thead>
             <tr><th>العنوان</th><th>النوع</th><th>النقاط</th><th>التاريخ</th></tr>
         </thead>
         <tbody>
             {% for sub in my_submissions %}
-            <tr><td>{{ sub.title }}</td><td>{{ sub.sub_type }}</td><td>{{ sub.points_awarded }}</td><td>{{ sub.submitted_at }}</td></tr>
+            <tr><td data-label="العنوان">{{ sub.title }}</td><td data-label="النوع">{{ sub.sub_type }}</td><td data-label="النقاط">{{ sub.points_awarded }}</td><td data-label="التاريخ">{{ sub.submitted_at }}</td></tr>
             {% else %}
-            <tr><td colspan="4">لسه معملتش أي تسليم</td></tr>
+            <tr class="table-empty-row"><td colspan="4">لسه معملتش أي تسليم</td></tr>
             {% endfor %}
         </tbody>
     </table>
 
     <h2 class="student-section-title page-section-title">سجل النقاط</h2>
-    <table class="students-table">
+    <table class="students-table student-data-table points-table">
         <thead><tr><th>النشاط</th><th>النقاط</th><th>التاريخ</th></tr></thead>
         <tbody>
             {% for p in points_history %}
-            <tr><td>{{ p.activity }}</td><td>{{ p.points }}</td><td>{{ p.created_at }}</td></tr>
+            <tr><td data-label="النشاط">{{ p.activity }}</td><td data-label="النقاط">{{ p.points }}</td><td data-label="التاريخ">{{ p.created_at }}</td></tr>
             {% else %}
-            <tr><td colspan="3">لسه مفيش نقاط مسجلة</td></tr>
+            <tr class="table-empty-row"><td colspan="3">لسه مفيش نقاط مسجلة</td></tr>
             {% endfor %}
         </tbody>
     </table>
