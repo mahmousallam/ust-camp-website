@@ -628,7 +628,8 @@ footer {
 .student-greeting-row { justify-content: space-between; }
 .student-greeting-row h2, .student-profile-head h2 { color: var(--app-primary); font-size: 1.25rem; line-height: 1.4; }
 .student-actions { display: flex; gap: 0.4rem; flex-wrap: wrap; justify-content: flex-start; }
-.student-area .btn-small { min-height: 44px; display: inline-flex; align-items: center; margin: 0; padding: 0.55rem 0.75rem; border-radius: var(--app-radius); background: var(--app-primary); }
+.student-area .btn-small { min-height: 44px; display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem; margin: 0; padding: 0.55rem 0.75rem; border-radius: var(--app-radius); background: var(--app-primary); color: #fff; }
+.student-action-icon { width: 18px; height: 18px; flex: 0 0 18px; color: currentColor; }
 .student-stats { display: grid; gap: 0.65rem; }
 .home-stats { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .account-stats { grid-template-columns: repeat(3, minmax(0, 1fr)); }
@@ -677,7 +678,7 @@ footer {
 .session-card { padding: 0.85rem 1rem; }
 .session-card-main { display: flex; align-items: center; gap: 0.55rem; }
 .session-card-main strong { color: var(--app-text); flex: 1; }
-.module-badge { flex: 0 0 auto; padding: 0.35rem; min-width: 32px; text-align: center; background: var(--app-primary); color: #fff; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
+.student-area .module-badge { position: static; flex: 0 0 auto; padding: 0.35rem; min-width: 32px; text-align: center; background: var(--app-primary); color: #fff; border-radius: 4px; font-size: 0.75rem; font-weight: bold; }
 .session-status { display: block; margin-top: 0.35rem; font-size: 0.8rem; }
 .status-done { color: var(--app-success); }
 .status-pending { color: var(--app-danger); }

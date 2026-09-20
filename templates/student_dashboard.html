@@ -7,8 +7,8 @@
         <div class="student-greeting-row">
             <h2>أهلاً {{ student.full_name }} 👋</h2>
             <div class="student-actions">
-                <a href="{{ url_for('student_upload') }}" class="btn-small">وثّق نشاط جديد</a>
-                <a href="{{ url_for('student_moment_new') }}" class="btn-small">شارك لحظة</a>
+                <a href="{{ url_for('student_upload') }}" class="btn-small"><svg class="student-action-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M5 14v4a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>وثّق نشاط جديد</span></a>
+                <a href="{{ url_for('student_moment_new') }}" class="btn-small"><svg class="student-action-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"/><circle cx="8" cy="10" r="1.5" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="m4.5 17 4.2-4.2 3 3 2.2-2.2 5.6 5.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>شارك لحظة</span></a>
             </div>
         </div>
 
