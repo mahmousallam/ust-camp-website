@@ -589,13 +589,22 @@ def get_active_stories(conn, viewer_id):
         likes_count = conn.execute(
             "SELECT COUNT(*) AS c FROM moment_likes WHERE moment_id = ?", (r["id"],)
         ).fetchone()["c"]
+        file_path = r["file_path"]
+        if file_path and not file_path.startswith(("/", "http://", "https://")):
+            file_path = "/" + file_path
         grouped[sid]["moments"].append({
-            "id": r["id"], "caption": r["caption"], "file_path": r["file_path"],
+            "id": r["id"], "caption": r["caption"], "file_path": file_path,
             "created_at": r["created_at"], "seen": seen, "liked": liked, "likes_count": likes_count
         })
 
     stories = list(grouped.values())
     for s in stories:
+        latest_image = next(
+            (moment["file_path"] for moment in reversed(s["moments"])
+             if moment["file_path"].lower().split("?")[0].rsplit(".", 1)[-1] in SESSION_IMAGE_EXTENSIONS),
+            None,
+        )
+        s["story_avatar_url"] = s["avatar_url"] or latest_image
         s["has_unseen"] = any(not m["seen"] for m in s["moments"])
         if s["is_mine"]:
             moment_ids = [m["id"] for m in s["moments"]]
@@ -1554,8 +1563,12 @@ def student_moment_view(moment_id):
         (moment_id, student["id"], datetime.now().strftime("%Y-%m-%d %H:%M"))
     )
     conn.commit()
+    views_count = conn.execute(
+        "SELECT COUNT(DISTINCT viewer_student_id) AS c FROM moment_views WHERE moment_id = ?",
+        (moment_id,)
+    ).fetchone()["c"]
     conn.close()
-    return {"ok": True}
+    return {"ok": True, "views_count": views_count}
 
 @app.route("/student/moment/<int:moment_id>/like", methods=["POST"])
 def student_moment_like(moment_id):

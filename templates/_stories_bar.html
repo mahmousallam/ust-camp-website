@@ -4,7 +4,7 @@
     <div class="story-circle {% if not s.has_unseen %}story-seen{% endif %}" onclick="openStory({{ loop.index0 }})">
         <div class="story-ring">
             <div class="story-avatar">
-                {% if s.avatar_url %}<img src="{{ s.avatar_url }}" alt="صورة {{ s.student_name }}">{% else %}{{ s.student_name[0] }}{% endif %}
+                {% if s.story_avatar_url %}<img src="{{ s.story_avatar_url }}" alt="صورة {{ s.student_name }}">{% else %}{{ s.student_name[0] }}{% endif %}
             </div>
             {% if s.is_mine %}<span class="story-views-badge">{{ s.views_count }}</span>{% endif %}
         </div>
@@ -73,7 +73,18 @@ function showSlide() {
     else { video.style.display = 'none'; video.pause(); img.style.display = 'block'; img.src = moment.file_path; slideTimer = setTimeout(nextSlide, 4000); }
     const fill = document.getElementById('seg-fill-' + currentSlideIdx);
     if (fill) { fill.style.transition = 'none'; fill.style.width = '0%'; setTimeout(() => { fill.style.transition = isVideo ? 'none' : 'width 4s linear'; fill.style.width = '100%'; }, 50); }
-    if (isLoggedIn) fetch('/student/moment/view/' + moment.id, {method: 'POST'});
+    if (isLoggedIn) {
+        fetch('/student/moment/view/' + moment.id, {method: 'POST'})
+            .then((response) => response.json())
+            .then((data) => {
+                if (!data.ok || !story.is_mine) return;
+                story.views_count = data.views_count;
+                document.getElementById('story-views-num').textContent = data.views_count;
+                const badge = document.querySelector('.story-circle:nth-child(' + (currentStoryIdx + 1) + ') .story-views-badge');
+                if (badge) badge.textContent = data.views_count;
+            })
+            .catch(() => {});
+    }
 }
 function toggleLike() {
     if (!isLoggedIn) { alert('سجّل دخول كطالب الأول'); return; }
