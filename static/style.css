@@ -716,6 +716,30 @@ footer {
     .student-dashboard { gap: 1.5rem; }
     .moments-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
     .student-area .moment-card img, .student-area .moment-card video { height: 160px; }
+    .student-mobile-tabs {
+        width: min(100% - 2rem, 960px);
+        display: grid;
+        grid-template-columns: repeat(5, minmax(0, 1fr));
+        margin: 0 auto;
+        background: var(--app-card);
+        border: 1px solid var(--app-border);
+        border-top: 0;
+        box-shadow: var(--app-shadow);
+    }
+    .student-mobile-tabs a {
+        min-height: 56px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.4rem;
+        color: var(--app-muted);
+        text-decoration: none;
+        font-size: 0.82rem;
+    }
+    .student-mobile-tabs a:hover,
+    .student-mobile-tabs a.is-active,
+    .student-mobile-tabs a:focus { color: var(--app-primary); background: #f0f5f2; }
+    .tab-icon { width: 22px; height: 22px; display: block; color: currentColor; }
 }
 
 @media (max-width: 767px) {
